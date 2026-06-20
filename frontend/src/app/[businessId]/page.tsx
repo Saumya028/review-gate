@@ -58,7 +58,7 @@ export default function BusinessPage() {
         }
     };
 
-    const handleFeedbackSubmit = async (feedback: string, email?: string, phone?: string) => {
+    const handleFeedbackSubmit = async (feedback: string, email?: string, phone?: string, mediaUrls?: string[]) => {
         setLoading(true);
         try {
             await axios.post(`${apiUrl}/feedback`, {
@@ -67,6 +67,7 @@ export default function BusinessPage() {
                 feedback,
                 email: email || '',
                 phone: phone || '',
+                media_urls: mediaUrls || null,
             });
             setToast({ message: 'Thank you for your feedback!', type: 'success' });
             setStep('success');
@@ -78,14 +79,14 @@ export default function BusinessPage() {
         }
     };
 
-    const handleReviewSubmit = async (keywords: string[]) => {
+    const handleReviewSubmit = async (keywords: string[]): Promise<string[]> => {
         setLoading(true);
         try {
             const response = await axios.post(`${apiUrl}/generate-review`, {
                 business_id: businessId,
                 keywords,
             });
-            return response.data.review;
+            return response.data.reviews;
         } catch (error) {
             console.error('Error generating review:', error);
             throw new Error('Failed to generate review. Please try again.');
@@ -96,6 +97,14 @@ export default function BusinessPage() {
 
     const showSuccessMessage = () => {
         setToast({ message: 'Thanks for your review! 🎉', type: 'success' });
+    };
+
+    // Spring-based step transition config
+    const stepTransition = {
+        type: 'spring' as const,
+        stiffness: 350,
+        damping: 30,
+        mass: 0.8,
     };
 
     // Loading state
@@ -124,7 +133,7 @@ export default function BusinessPage() {
                     </p>
                     <a
                         href="/"
-                        className="inline-block bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+                        className="inline-block bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg min-h-[48px] leading-[48px]"
                     >
                         Go Home
                     </a>
@@ -147,7 +156,7 @@ export default function BusinessPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.35, ease: 'easeOut' }}
+                            transition={stepTransition}
                         >
                             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                                 {/* Gradient header accent */}
@@ -215,7 +224,7 @@ export default function BusinessPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.35, ease: 'easeOut' }}
+                            transition={stepTransition}
                         >
                             <NegativeFeedbackForm
                                 onSubmit={handleFeedbackSubmit}
@@ -231,7 +240,7 @@ export default function BusinessPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.35, ease: 'easeOut' }}
+                            transition={stepTransition}
                         >
                             <PositiveReviewFlow
                                 business={business}
@@ -247,7 +256,7 @@ export default function BusinessPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            transition={{ duration: 0.35 }}
+                            transition={stepTransition}
                         >
                             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                                 <div className="h-1.5 bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400" />
@@ -301,7 +310,7 @@ export default function BusinessPage() {
                                             setStep('business');
                                             setRating(null);
                                         }}
-                                        className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+                                        className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg min-h-[48px]"
                                         initial={{ opacity: 0, y: 8 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.35 }}

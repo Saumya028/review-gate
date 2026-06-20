@@ -36,7 +36,7 @@ export default function StarRating({ onRate }: StarRatingProps) {
 
     return (
         <motion.div
-            className="flex justify-center gap-3 sm:gap-4 my-8"
+            className="flex justify-center gap-2 sm:gap-3 my-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -50,9 +50,10 @@ export default function StarRating({ onRate }: StarRatingProps) {
                         onClick={() => onRate(rating)}
                         onMouseEnter={() => setHoveredRating(rating)}
                         onMouseLeave={() => setHoveredRating(null)}
-                        className="focus:outline-none transform transition-all"
+                        onTouchStart={() => setHoveredRating(rating)}
+                        className="focus:outline-none transform transition-all touch-target flex items-center justify-center p-1"
                         whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.9 }}
+                        whileTap={{ scale: 0.85, rotate: -8 }}
                         aria-label={`Rate ${rating} star${rating !== 1 ? 's' : ''}`}
                     >
                         <motion.svg
@@ -65,7 +66,7 @@ export default function StarRating({ onRate }: StarRatingProps) {
                             animate={{
                                 scale: isFilled ? 1.1 : 1,
                             }}
-                            transition={{ duration: 0.2 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                         >
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </motion.svg>

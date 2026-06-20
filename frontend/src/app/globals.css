@@ -121,3 +121,64 @@ textarea:focus {
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
 }
+
+/* ===== Mobile Touch Target Utilities ===== */
+.touch-target {
+    min-height: 48px;
+    min-width: 48px;
+}
+
+/* Prevent double-tap zoom on all interactive elements */
+button,
+a,
+input,
+textarea,
+select,
+[role="button"] {
+    touch-action: manipulation;
+}
+
+/* ===== Upload Zone Styles ===== */
+@keyframes uploadPulse {
+    0%, 100% {
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+    50% {
+        border-color: rgba(99, 102, 241, 0.6);
+    }
+}
+
+.upload-zone-active {
+    animation: uploadPulse 1.5s ease-in-out infinite;
+    background-color: rgba(99, 102, 241, 0.04);
+}
+
+/* ===== Circular Progress for Uploads ===== */
+@keyframes spin-progress {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.upload-progress-ring {
+    animation: spin-progress 1s linear infinite;
+}
+
+/* ===== Tab Indicator Animation ===== */
+@keyframes tabSlide {
+    from {
+        opacity: 0;
+        transform: scaleX(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+/* ===== Drag Over Highlight ===== */
+.drag-over {
+    border-color: #6366f1 !important;
+    background-color: rgba(99, 102, 241, 0.06) !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}

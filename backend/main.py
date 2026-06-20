@@ -1,8 +1,12 @@
+from httpx import _client
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os
+import json
+import uuid
+import httpx
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
 
@@ -12,14 +16,24 @@ from schemas import (
     FeedbackRequest,
     GenerateReviewRequest,
     GenerateReviewResponse,
+    UploadUrlRequest,
+    UploadUrlResponse,
 )
 from database import init_db, get_db_session
 from services import generate_review_with_ai
-
+import traceback
 # Load environment variables, overriding system environment variables to prevent local database URL conflicts
 load_dotenv(override=True)
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./review_gating.db")
+
+# Supabase config for media storage
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET", "feedback-media")
+print("SUPABASE_URL =", SUPABASE_URL)
+print("KEY EXISTS =", bool(SUPABASE_SERVICE_KEY))
+print("KEY PREFIX =", SUPABASE_SERVICE_KEY[:20] if SUPABASE_SERVICE_KEY else "NONE")
 
 # Sanitize database URL to prevent crashes from common configuration formats:
 # 1. Handle Prisma-style SQLite URLs (e.g. file:./prisma/dev.db) by falling back to standard SQLite url
@@ -87,6 +101,73 @@ async def get_business(business_id: str):
         db.close()
 
 
+@app.post("/upload-url", response_model=UploadUrlResponse)
+async def get_upload_url(request: UploadUrlRequest):
+    """Generate a pre-signed upload URL for Supabase Storage"""
+    if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="Media upload is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_KEY.",
+        )
+
+    # Validate content type
+    allowed_types = [
+        "image/jpeg", "image/png", "image/gif", "image/webp",
+        "video/mp4", "video/webm", "video/quicktime",
+    ]
+    if request.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail=f"File type not allowed: {request.content_type}")
+
+    # Generate unique file path
+    unique_id = str(uuid.uuid4())
+    file_ext = request.filename.rsplit(".", 1)[-1] if "." in request.filename else "bin"
+    safe_filename = f"{unique_id}.{file_ext}"
+    file_path = f"feedback/{safe_filename}"
+
+    try:
+        async with httpx.AsyncClient() as client:
+            # Create a signed upload URL via Supabase Storage API
+            print("Bucket:", SUPABASE_BUCKET)
+            print("File path:", file_path)
+            print("Request URL:", f"{SUPABASE_URL}/storage/v1/object/upload/sign/{SUPABASE_BUCKET}/{file_path}")
+            response = await client.post(
+                f"{SUPABASE_URL}/storage/v1/object/upload/sign/{SUPABASE_BUCKET}/{file_path}",
+                headers={
+                    "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+                    "apikey": SUPABASE_SERVICE_KEY,
+                    "Content-Type": "application/json",
+                },
+                json={},
+                timeout=15.0,
+            )
+            response.raise_for_status()
+            data = response.json()
+
+            # The signed URL token
+            signed_token = data.get("token") or data.get("url", "")
+            if signed_token.startswith("/"):
+                upload_url = f"{SUPABASE_URL}/storage/v1{signed_token}"
+            elif signed_token.startswith("http"):
+                upload_url = signed_token
+            else:
+                upload_url = f"{SUPABASE_URL}/storage/v1/object/upload/sign/{SUPABASE_BUCKET}/{file_path}?token={signed_token}"
+
+            # Public URL for accessing the file after upload
+            public_url = f"{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/{file_path}"
+
+            return UploadUrlResponse(
+                upload_url=upload_url,
+                public_url=public_url,
+                file_path=file_path,
+            )
+    except httpx.HTTPStatusError as e:
+        print(f"Supabase Storage Error: {e.response.status_code} - {e.response.text}")
+        raise HTTPException(status_code=502, detail="Failed to generate upload URL from storage provider")
+    except Exception as e:
+        print(f"Upload URL Error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal error generating upload URL")
+
+
 @app.post("/feedback")
 async def submit_feedback(request: FeedbackRequest):
     """Submit feedback for a business"""
@@ -97,6 +178,9 @@ async def submit_feedback(request: FeedbackRequest):
         if not business:
             raise HTTPException(status_code=404, detail="Business not found")
 
+        # Serialize media_urls to JSON string for storage
+        media_urls_json = json.dumps(request.media_urls) if request.media_urls else None
+
         # Create feedback record
         feedback = Feedback(
             business_id=request.business_id,
@@ -104,6 +188,7 @@ async def submit_feedback(request: FeedbackRequest):
             feedback=request.feedback,
             email=request.email,
             phone=request.phone,
+            media_urls=media_urls_json,
         )
         db.add(feedback)
         db.commit()
@@ -120,13 +205,18 @@ async def submit_feedback(request: FeedbackRequest):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+    # except Exception as e:
+    #     db.rollback()
+    #     print("FEEDBACK ERROR:")
+    #     traceback.print_exc()
+    #     raise HTTPException(status_code=500, detail=str(e))
     finally:
         db.close()
 
 
 @app.post("/generate-review", response_model=GenerateReviewResponse)
 async def generate_review(request: GenerateReviewRequest):
-    """Generate a positive review using AI"""
+    """Generate positive review variations using AI"""
     db = SessionLocal()
     try:
         # Verify business exists
@@ -134,24 +224,24 @@ async def generate_review(request: GenerateReviewRequest):
         if not business:
             raise HTTPException(status_code=404, detail="Business not found")
 
-        # Generate review using AI
-        generated_text = await generate_review_with_ai(
+        # Generate review variations using AI
+        generated_texts = await generate_review_with_ai(
             business_name=business.name,
             business_type=business.type,
             keywords=request.keywords,
             custom_text=request.custom_text,
         )
 
-        # Store in database
+        # Store the first (primary) variation in database
         generated_review = GeneratedReview(
             business_id=request.business_id,
             keywords=",".join(request.keywords) if request.keywords else "",
-            generated_review=generated_text,
+            generated_review=generated_texts[0] if generated_texts else "",
         )
         db.add(generated_review)
         db.commit()
 
-        return GenerateReviewResponse(review=generated_text)
+        return GenerateReviewResponse(reviews=generated_texts)
     except HTTPException as he:
         db.rollback()
         raise he

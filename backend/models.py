@@ -33,6 +33,7 @@ class Feedback(Base):
     feedback = Column(Text, nullable=False)
     email = Column(String, nullable=True)
     phone = Column(String, nullable=True)
+    media_urls = Column(Text, nullable=True)  # JSON array of Supabase Storage URLs
     created_at = Column(DateTime, default=datetime.utcnow)
 
     def __repr__(self):

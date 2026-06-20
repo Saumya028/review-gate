@@ -24,6 +24,22 @@ class FeedbackRequest(BaseModel):
     feedback: str
     email: Optional[str] = None
     phone: Optional[str] = None
+    media_urls: Optional[List[str]] = None
+
+
+class UploadUrlRequest(BaseModel):
+    """Request schema for generating a pre-signed upload URL"""
+
+    filename: str
+    content_type: str
+
+
+class UploadUrlResponse(BaseModel):
+    """Response schema with signed upload URL and final public URL"""
+
+    upload_url: str
+    public_url: str
+    file_path: str
 
 
 class GenerateReviewRequest(BaseModel):
@@ -35,6 +51,6 @@ class GenerateReviewRequest(BaseModel):
 
 
 class GenerateReviewResponse(BaseModel):
-    """Generate review response schema"""
+    """Generate review response schema — returns multiple AI variations"""
 
-    review: str
+    reviews: List[str]

@@ -16,7 +16,7 @@ interface Business {
 interface PositiveReviewFlowProps {
     business: Business;
     onSuccess: () => void;
-    onGenerateReview: (keywords: string[]) => Promise<string>;
+    onGenerateReview: (keywords: string[]) => Promise<string[]>;
 }
 
 const TAGS = [
@@ -33,7 +33,7 @@ const TAGS = [
 export default function PositiveReviewFlow({ business, onSuccess, onGenerateReview }: PositiveReviewFlowProps) {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [customText, setCustomText] = useState('');
-    const [generatedReview, setGeneratedReview] = useState<string | null>(null);
+    const [generatedReviews, setGeneratedReviews] = useState<string[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [phase, setPhase] = useState<'tags' | 'review'>('tags');
@@ -57,8 +57,8 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
         setError('');
 
         try {
-            const review = await onGenerateReview(selectedTags);
-            setGeneratedReview(review);
+            const reviews = await onGenerateReview(selectedTags);
+            setGeneratedReviews(reviews);
             setPhase('review');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to generate review. Please try again.');
@@ -85,7 +85,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
             {/* Header accent */}
             <div className="h-1.5 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
 
-            <div className="p-8">
+            <div className="p-6 sm:p-8">
                 <AnimatePresence mode="wait">
                     {phase === 'tags' && (
                         <motion.div
@@ -125,12 +125,12 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                         <motion.button
                                             key={tag.label}
                                             onClick={() => toggleTag(tag.label)}
-                                            className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 border-2 flex items-center gap-1.5 ${
+                                            className={`px-4 py-3 rounded-full text-sm font-medium transition-all duration-200 border-2 flex items-center gap-1.5 min-h-[48px] ${
                                                 isSelected
                                                     ? 'bg-indigo-50 border-indigo-400 text-indigo-700 shadow-sm'
                                                     : 'bg-gray-50/80 border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-100/80'
                                             }`}
-                                            whileTap={{ scale: 0.95 }}
+                                            whileTap={{ scale: 0.93 }}
                                             initial={{ opacity: 0, scale: 0.8 }}
                                             animate={{
                                                 opacity: 1,
@@ -169,7 +169,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                     onChange={(e) => setCustomText(e.target.value)}
                                     placeholder="Optional — share any extra thoughts..."
                                     rows={3}
-                                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-800 text-sm resize-none transition-all duration-200 focus:border-indigo-400 placeholder:text-gray-400"
+                                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-800 text-sm resize-none transition-all duration-200 focus:border-indigo-400 placeholder:text-gray-400 min-h-[48px]"
                                 />
                             </motion.div>
 
@@ -192,7 +192,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                 <button
                                     onClick={handleGenerate}
                                     disabled={loading}
-                                    className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2.5"
+                                    className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 min-h-[48px]"
                                 >
                                     {loading ? (
                                         <>
@@ -200,14 +200,14 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                                             </svg>
-                                            Generating your review...
+                                            Generating your reviews...
                                         </>
                                     ) : (
                                         <>
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                             </svg>
-                                            Generate Review
+                                            Generate Reviews
                                         </>
                                     )}
                                 </button>
@@ -226,27 +226,27 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                         </motion.div>
                     )}
 
-                    {phase === 'review' && generatedReview && (
+                    {phase === 'review' && generatedReviews && (
                         <motion.div
                             key="review"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                         >
                             <div className="text-center mb-2">
                                 <span className="text-4xl">✍️</span>
                             </div>
 
                             <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
-                                Your Review is Ready!
+                                Your Reviews are Ready!
                             </h2>
 
                             <p className="text-gray-500 text-center text-sm mb-6">
-                                Here&apos;s a review based on your experience. Feel free to edit it after pasting.
+                                Choose your favorite style below. Swipe or tap to browse {generatedReviews.length} options.
                             </p>
 
                             <ReviewDisplay
-                                review={generatedReview}
+                                reviews={generatedReviews}
                                 googlePlaceId={business.google_place_id}
                                 onSuccess={onSuccess}
                             />
@@ -254,7 +254,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                             {/* Back button */}
                             <button
                                 onClick={() => setPhase('tags')}
-                                className="w-full mt-4 text-gray-500 hover:text-gray-700 text-sm font-medium py-2 transition-colors flex items-center justify-center gap-1.5"
+                                className="w-full mt-4 text-gray-500 hover:text-gray-700 text-sm font-medium py-2 transition-colors flex items-center justify-center gap-1.5 min-h-[44px]"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
