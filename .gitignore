@@ -1,0 +1,101 @@
+# =========================
+
+# Dependencies
+
+# =========================
+
+node_modules/
+**pycache**/
+*.pyc
+venv/
+.venv/
+env/
+
+# =========================
+
+# Environment Variables
+
+# =========================
+
+.env
+.env.local
+.env*.local
+backend/.env
+frontend/.env.local
+
+# =========================
+
+# Databases
+
+# =========================
+
+*.db
+*.sqlite
+*.sqlite3
+
+# =========================
+
+# Next.js
+
+# =========================
+
+.next/
+out/
+
+# =========================
+
+# Build Outputs
+
+# =========================
+
+dist/
+build/
+
+# =========================
+
+# TypeScript
+
+# =========================
+
+*.tsbuildinfo
+next-env.d.ts
+
+# =========================
+
+# Python Cache
+
+# =========================
+
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+
+# IDE
+
+# =========================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+
+# Logs
+
+# =========================
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+
+# OS Files
+
+# =========================
+
+.DS_Store
+Thumbs.db
