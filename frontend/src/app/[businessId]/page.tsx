@@ -32,7 +32,7 @@ export default function BusinessPage() {
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://review-gate-j5tr.vercel.app/';
 
     useEffect(() => {
         const fetchBusiness = async () => {
