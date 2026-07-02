@@ -10,11 +10,11 @@ interface ReviewDisplayProps {
 }
 
 const VARIATION_LABELS = [
-    { label: 'Short', emoji: '⚡', description: 'Quick & punchy' },
-    { label: 'Detailed', emoji: '📝', description: 'Thorough review' },
-    { label: 'Casual', emoji: '😊', description: 'Friendly tone' },
-    { label: 'Pro', emoji: '💼', description: 'Professional' },
-    { label: 'Excited', emoji: '🔥', description: 'Enthusiastic' },
+    { label: 'Option 1', emoji: '📝', description: 'Grateful client' },
+    { label: 'Option 2', emoji: '👍', description: 'Recommendation' },
+    { label: 'Option 3', emoji: '✨', description: 'First-time experience' },
+    { label: 'Option 4', emoji: '🔄', description: 'Returning client' },
+    { label: 'Option 5', emoji: '🏢', description: 'Representative' },
 ];
 
 export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: ReviewDisplayProps) {
@@ -115,9 +115,9 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
                             <motion.button
                                 key={index}
                                 onClick={() => handleTabChange(index)}
-                                className={`relative flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 min-h-[44px] ${
+                                className={`relative flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 min-h-[44px] ${
                                     isActive
-                                        ? 'text-indigo-700'
+                                        ? 'text-[#1a73e8]'
                                         : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                 }`}
                                 whileTap={{ scale: 0.95 }}
@@ -125,7 +125,7 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeTab"
-                                        className="absolute inset-0 bg-indigo-50 border border-indigo-200/60 rounded-xl"
+                                        className="absolute inset-0 bg-[#e8f0fe] border border-[#c2d7f8] rounded-full"
                                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                     />
                                 )}
@@ -142,11 +142,11 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
                         <motion.div
                             key={i}
                             className={`h-1.5 rounded-full transition-all duration-300 ${
-                                i === activeIndex ? 'w-5 bg-indigo-500' : 'w-1.5 bg-gray-200'
+                                i === activeIndex ? 'w-5 bg-[#1a73e8]' : 'w-1.5 bg-gray-200'
                             }`}
                             animate={{
                                 width: i === activeIndex ? 20 : 6,
-                                backgroundColor: i === activeIndex ? '#6366f1' : '#e5e7eb',
+                                backgroundColor: i === activeIndex ? '#1a73e8' : '#e5e7eb',
                             }}
                         />
                     ))}
@@ -156,7 +156,7 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
             {/* Swipeable Review Card */}
             <motion.div
                 variants={itemVariants}
-                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-50/80 to-blue-50/80 border border-indigo-100/60 min-h-[140px]"
+                className="relative overflow-hidden rounded-lg bg-[#f8f9fa] border border-gray-200 min-h-[140px]"
             >
                 <AnimatePresence mode="wait" custom={direction}>
                     <motion.div
@@ -181,18 +181,18 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
                                     </svg>
                                 ))}
                             </div>
-                            <span className="text-xs font-medium text-indigo-400 uppercase tracking-wider">
+                            <span className="text-xs font-medium text-[#1a73e8] uppercase tracking-wider">
                                 {tabs[activeIndex]?.description || 'AI Generated'}
                             </span>
                         </div>
 
-                        <p className="text-gray-800 text-base leading-relaxed italic select-text">
+                        <p className="text-gray-700 text-sm leading-relaxed select-text">
                             &ldquo;{currentReview}&rdquo;
                         </p>
 
                         {/* Swipe hint for mobile */}
                         {reviews.length > 1 && (
-                            <p className="text-xs text-indigo-300 mt-4 text-center sm:hidden flex items-center justify-center gap-1">
+                            <p className="text-xs text-gray-400 mt-4 text-center sm:hidden flex items-center justify-center gap-1">
                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                 </svg>
@@ -208,7 +208,7 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
                 {/* Copy & Open Google - Primary */}
                 <button
                     onClick={handleCopyAndOpen}
-                    className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 min-h-[48px]"
+                    className="w-full bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium py-3.5 px-6 rounded-full transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-2.5 min-h-[48px] text-sm"
                 >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -222,7 +222,7 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
                 {/* Copy only - Secondary */}
                 <button
                     onClick={handleCopy}
-                    className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300 flex items-center justify-center gap-2.5 min-h-[48px]"
+                    className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-3.5 px-6 rounded-full transition-all duration-200 border border-gray-300 hover:border-gray-400 flex items-center justify-center gap-2.5 min-h-[48px] text-sm"
                 >
                     {copied ? (
                         <>
@@ -245,12 +245,12 @@ export default function ReviewDisplay({ reviews, googlePlaceId, onSuccess }: Rev
             {/* Helper message */}
             <motion.div
                 variants={itemVariants}
-                className="bg-amber-50/80 border border-amber-200/60 rounded-xl px-4 py-3 flex items-start gap-2.5"
+                className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex items-start gap-2.5"
             >
-                <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-[#1a73e8] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm text-amber-800 leading-snug">
+                <p className="text-sm text-gray-600 leading-snug">
                     Your review has been copied. Simply <strong>paste</strong> it into Google when the review page opens.
                 </p>
             </motion.div>

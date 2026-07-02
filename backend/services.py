@@ -15,6 +15,7 @@ async def generate_review_with_ai(
     business_type: str,
     keywords: List[str],
     custom_text: Optional[str] = "",
+    selected_service: str = "",
 ) -> List[str]:
     """
     Generate multiple positive review variations using OpenRouter API
@@ -24,41 +25,59 @@ async def generate_review_with_ai(
         business_type: Type/category of the business
         keywords: List of keywords to include in the review
         custom_text: Optional additional context from the customer
+        selected_service: The specific legal service the client received
 
     Returns:
-        List of generated review text variations (3-5 options)
+        List of generated review text variations (5 options)
     """
 
     if not OPENROUTER_API_KEY:
         # Use fallback if no API key configured
-        return generate_fallback_review(business_name, business_type, keywords, custom_text)
+        return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
 
-    keywords_text = ", ".join(keywords) if keywords else "service quality"
+    keywords_text = ", ".join(keywords) if keywords else "legal expertise"
     custom_section = f"\nAdditional Customer Notes: {custom_text}" if custom_text else ""
+    service_section = f"\nSpecific Legal Service Used: {selected_service}" if selected_service else ""
 
-    system_prompt = """You are writing genuine positive customer reviews. You must return EXACTLY a JSON array of 5 different review variations. Follow these guidelines strictly:
+    system_prompt = """You are writing genuine, detailed positive client testimonials for a reputable law firm. You must return EXACTLY a JSON array of 5 different review variations. Follow these guidelines strictly:
 
-VARIATION STYLES:
-1. "Short & Punchy" — 1-2 sentences, max 30 words. Casual and concise.
-2. "Detailed" — 3-4 sentences, descriptive and thorough. ~60 words.
-3. "Casual & Friendly" — 2-3 sentences, warm conversational tone with personality.
-4. "Professional" — 2-3 sentences, polished and refined business-appropriate tone.
-5. "Enthusiastic" — 2-3 sentences, energetic and emotional with genuine excitement.
+CRITICAL LENGTH REQUIREMENT:
+- Every single review variation MUST be a comprehensive paragraph containing a MINIMUM of 4-5 full sentences.
+- Each review MUST be between 70 and 130 words. No exceptions.
+- ABSOLUTELY DO NOT generate any short, casual, or punchy 1-2 sentence reviews. Any review under 4 sentences is UNACCEPTABLE.
 
-RULES FOR ALL VARIATIONS:
-- Natural and authentic tone — no marketing language or exaggeration.
-- Integrate the provided keywords naturally.
-- Each variation must be unique — different sentence structures and word choices.
-- Output ONLY a valid JSON array of 5 strings, nothing else. No markdown, no labels.
+VARIATION STRUCTURE (all must be long-form paragraphs):
+1. "Grateful Client" — A heartfelt, detailed testimonial emphasizing personal relief and trust. Start with a personal situation or emotional hook.
+2. "Recommending Professional" — A thorough recommendation focusing on competence and professionalism. Start with a recommendation or referral angle.
+3. "Impressed First-Timer" — A detailed account from someone using legal services for the first time. Start with initial apprehension turning to confidence.
+4. "Returning Client" — A loyal client sharing why they keep coming back. Start with how long or how many times they have used the firm.
+5. "Business/Society Representative" — A testimonial from a housing society member, developer, or business owner. Start with the organizational context.
 
-EXAMPLE OUTPUT FORMAT:
-["Review 1 text here.", "Review 2 text here.", "Review 3 text here.", "Review 4 text here.", "Review 5 text here."]"""
+MANDATORY LOCAL SEO ANCHORS (embed naturally based on context — do NOT force all into every review):
+- Location references: "Andheri", "Mumbai", "Maharashtra"
+- Legal body references (use where relevant to the service): "RERA", "Tribunals", "Consumer Commissions", "Courts", "Government Authorities"
+- Embed the specific legal service name naturally in each review.
 
-    user_prompt = f"""Business Name: {business_name}
-Business Type: {business_type}
-Customer Keywords: {keywords_text}{custom_section}
+DIVERSITY RULES:
+- Each review MUST start with a completely different opening phrase. BANNED openings: "Chirag Shah & Co is...", "Chirag Shah & Co has...", "I visited Chirag Shah...", "The team at Chirag Shah...". Use varied hooks: questions, anecdotes, recommendations, emotional statements, context-setting phrases.
+- Use different sentence structures, vocabulary, and perspectives across all 5 variations.
+- Vary how the firm name is referenced: full name, "the firm", "their team", "Advocate Shah and his colleagues", etc.
 
-Generate the 5 review variations as a JSON array:"""
+TONE RULES:
+- Natural and authentic — sounds like a real person wrote it, not marketing copy.
+- Professional but warm. No excessive exclamation marks (max 1 per review).
+- Integrate the provided keywords and service name organically.
+- Do NOT use phrases like "I highly recommend" in more than 2 of the 5 reviews.
+
+OUTPUT FORMAT:
+- Output ONLY a valid JSON array of 5 strings, nothing else. No markdown, no labels, no numbering.
+- Example: ["Review 1 full paragraph here.", "Review 2 full paragraph here.", "Review 3 full paragraph here.", "Review 4 full paragraph here.", "Review 5 full paragraph here."]"""
+
+    user_prompt = f"""Firm Name: {business_name}
+Firm Type: {business_type}
+Client-Selected Keywords: {keywords_text}{service_section}{custom_section}
+
+Generate the 5 long-form review variations as a JSON array:"""
 
     try:
         async with httpx.AsyncClient() as client:
@@ -70,15 +89,15 @@ Generate the 5 review variations as a JSON array:"""
                     "X-Title": "Review Gating Platform",
                 },
                 json={
-                    "model": "mistralai/mistral-7b-instruct",
+                    "model": "mistralai/mistral-small-3.1-24b-instruct",
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt},
                     ],
-                    "max_tokens": 600,
-                    "temperature": 0.8,
+                    "max_tokens": 1200,
+                    "temperature": 0.85,
                 },
-                timeout=30.0,
+                timeout=45.0,
             )
 
             response.raise_for_status()
@@ -86,18 +105,18 @@ Generate the 5 review variations as a JSON array:"""
 
             if "choices" in data and len(data["choices"]) > 0:
                 raw_text = data["choices"][0]["message"]["content"].strip()
-                return parse_review_variations(raw_text, business_name, business_type, keywords, custom_text)
+                return parse_review_variations(raw_text, business_name, business_type, keywords, custom_text, selected_service)
             else:
                 raise ValueError("Unexpected response format from OpenRouter API")
 
     except httpx.HTTPStatusError as e:
         print(f"HTTP Error: {e.response.status_code} - {e.response.text}")
         # Fall back to template generation
-        return generate_fallback_review(business_name, business_type, keywords, custom_text)
+        return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
     except Exception as e:
         print(f"Error generating review: {str(e)}")
         # Fall back to template generation
-        return generate_fallback_review(business_name, business_type, keywords, custom_text)
+        return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
 
 
 def parse_review_variations(
@@ -106,6 +125,7 @@ def parse_review_variations(
     business_type: str,
     keywords: List[str],
     custom_text: Optional[str] = "",
+    selected_service: str = "",
 ) -> List[str]:
     """
     Robustly parse AI response into a list of review strings.
@@ -149,11 +169,11 @@ def parse_review_variations(
 
     if single_review and len(single_review) > 10:
         # Use the single AI review as the first option, supplement with fallbacks
-        fallbacks = generate_fallback_review(business_name, business_type, keywords, custom_text)
+        fallbacks = generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
         return [single_review] + fallbacks[1:]
 
     # Full fallback
-    return generate_fallback_review(business_name, business_type, keywords, custom_text)
+    return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
 
 
 def generate_fallback_review(
@@ -161,88 +181,56 @@ def generate_fallback_review(
     business_type: str,
     keywords: List[str],
     custom_text: Optional[str] = "",
+    selected_service: str = "",
 ) -> List[str]:
-    """Generate fallback review variations without API"""
+    """Generate fallback review variations without API — long-form, SEO-optimized"""
     reviews = []
+    service_ref = selected_service if selected_service else "legal services"
+    kw_text = " and ".join(keywords[:2]) if keywords else "professional guidance"
 
-    if len(keywords) >= 2:
-        kw1, kw2 = keywords[0].lower(), keywords[1].lower()
+    # Variation 1: Grateful Client perspective
+    reviews.append(
+        f"When I first approached {business_name} for {service_ref}, I was overwhelmed by the complexity of my case and unsure about the legal process ahead. "
+        f"From the very first consultation at their Andheri office, the team put me at ease with their {kw_text} and thorough understanding of the matter. "
+        f"They guided me through every step, explaining the implications clearly and ensuring I was always informed about the progress. "
+        f"Their expertise in handling cases across Mumbai courts and tribunals gave me confidence that my matter was in capable hands. "
+        f"I am genuinely grateful for the outcome and would trust them with any legal matter in the future."
+    )
 
-        # Short & Punchy
-        reviews.append(
-            f"Loved {business_name}! The {kw1} and {kw2} were on point."
-        )
-        # Detailed
-        reviews.append(
-            f"Had a wonderful experience at {business_name}. "
-            f"Really appreciated the {kw1} and {kw2}. "
-            f"Everything felt professional and welcoming. "
-            f"Will definitely be coming back for more!"
-        )
-        # Casual & Friendly
-        reviews.append(
-            f"Just visited {business_name} and honestly, so impressed! "
-            f"The {kw1} was great and the {kw2} really made my day. "
-            f"Definitely recommending to friends."
-        )
-        # Professional
-        reviews.append(
-            f"I was thoroughly impressed by {business_name}. "
-            f"The {kw1} and {kw2} exceeded my expectations. "
-            f"A commendable {business_type.lower()} that I will certainly return to."
-        )
-        # Enthusiastic
-        reviews.append(
-            f"Wow, {business_name} is absolutely amazing! "
-            f"The {kw1} blew me away and the {kw2} was incredible! "
-            f"Best {business_type.lower()} experience I've had in ages!"
-        )
-    elif len(keywords) == 1:
-        kw = keywords[0].lower()
+    # Variation 2: Recommending Professional perspective
+    reviews.append(
+        f"If you are looking for a reliable law firm in Mumbai that truly delivers on its promises, I would strongly suggest consulting {business_name} in Andheri. "
+        f"I engaged them for {service_ref} and was impressed by their {kw_text} throughout the entire engagement. "
+        f"What sets them apart is their ability to break down complex legal matters into understandable terms while maintaining the highest level of professionalism. "
+        f"Their familiarity with Maharashtra's legal framework, including proceedings before various courts and government authorities, proved invaluable in my case. "
+        f"The practical advice and strategic approach they offered made the entire process far less stressful than I had anticipated."
+    )
 
-        reviews.append(
-            f"Great visit to {business_name}! The {kw} really stood out."
-        )
-        reviews.append(
-            f"Loved my visit to {business_name}! "
-            f"The {kw} really stood out. "
-            f"Highly recommend this {business_type.lower()} to everyone. "
-            f"Will be back soon!"
-        )
-        reviews.append(
-            f"Stopped by {business_name} today — the {kw} was spot on! "
-            f"Such a vibe. Definitely coming back."
-        )
-        reviews.append(
-            f"An excellent experience at {business_name}. "
-            f"The {kw} was particularly noteworthy. "
-            f"A fine establishment I'd recommend without hesitation."
-        )
-        reviews.append(
-            f"Can't stop thinking about {business_name}! "
-            f"The {kw} was absolutely fantastic! "
-            f"Already planning my next visit!"
-        )
-    else:
-        reviews.append(
-            f"Loved {business_name}! Great experience, will return."
-        )
-        reviews.append(
-            f"Great experience at {business_name}! "
-            f"The service was excellent and the atmosphere was welcoming. "
-            f"Will definitely be coming back."
-        )
-        reviews.append(
-            f"Had such a good time at {business_name}! "
-            f"Everything was chill and the vibes were perfect. Highly recommend."
-        )
-        reviews.append(
-            f"I was impressed by the quality of service at {business_name}. "
-            f"A well-run {business_type.lower()} that delivers a solid experience."
-        )
-        reviews.append(
-            f"Absolutely loved everything about {business_name}! "
-            f"What an amazing {business_type.lower()}! Can't wait to go back!"
-        )
+    # Variation 3: Impressed First-Timer perspective
+    reviews.append(
+        f"Having never dealt with legal matters before, I was quite apprehensive about seeking help for {service_ref}, but my experience with {business_name} completely changed my perspective. "
+        f"Their Andheri, Mumbai office felt welcoming and the initial consultation itself demonstrated their {kw_text} and deep knowledge of the subject. "
+        f"They patiently answered all my questions, no matter how basic, and laid out a clear roadmap for my case. "
+        f"The team's experience with tribunals and consumer commissions in Maharashtra was evident in how confidently they handled the proceedings. "
+        f"I walked away feeling that I had made the right choice, and the successful resolution of my matter confirmed it."
+    )
+
+    # Variation 4: Returning Client perspective
+    reviews.append(
+        f"Over the past several years, I have consulted {business_name} on multiple occasions for different legal needs, and their consistency in delivering excellent {service_ref} is truly commendable. "
+        f"Each time I visit their Andheri office, the team demonstrates the same level of dedication, {kw_text}, and attention to detail that I experienced during my very first engagement. "
+        f"Whether it involves court appearances in Mumbai or documentation work requiring coordination with government authorities, they handle everything with remarkable efficiency. "
+        f"Their understanding of Maharashtra's legal landscape and their network across various courts and RERA authorities has been extremely beneficial. "
+        f"I have recommended them to several friends and family members, and everyone has had equally positive experiences."
+    )
+
+    # Variation 5: Business/Society Representative perspective
+    reviews.append(
+        f"As a representative of our housing society in Andheri, I can say that engaging {business_name} for {service_ref} was one of the best decisions our managing committee made. "
+        f"The firm demonstrated exceptional {kw_text} and a thorough understanding of the legal complexities involved in society matters across Mumbai. "
+        f"They represented us effectively before RERA and various tribunals, always keeping our committee updated with clear, jargon-free communication. "
+        f"Their strategic approach to navigating Maharashtra's regulatory framework saved us both time and resources, and the outcome exceeded our expectations. "
+        f"We continue to retain their services for ongoing legal matters and have complete confidence in their counsel."
+    )
 
     return reviews

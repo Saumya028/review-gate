@@ -48,6 +48,7 @@ class GenerateReviewRequest(BaseModel):
     business_id: str
     keywords: List[str]
     custom_text: Optional[str] = ""
+    selected_service: Optional[str] = ""
 
 
 class GenerateReviewResponse(BaseModel):

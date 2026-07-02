@@ -230,6 +230,7 @@ async def generate_review(request: GenerateReviewRequest):
             business_type=business.type,
             keywords=request.keywords,
             custom_text=request.custom_text,
+            selected_service=request.selected_service,
         )
 
         # Store the first (primary) variation in database

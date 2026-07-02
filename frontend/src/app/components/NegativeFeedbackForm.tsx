@@ -197,39 +197,32 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
 
     return (
         <motion.div
-            className="bg-white rounded-2xl shadow-lg overflow-hidden"
+            className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
-            {/* Header accent */}
-            <div className="h-1.5 bg-gradient-to-r from-amber-400 via-orange-400 to-red-400" />
-
             <div className="p-6 sm:p-8">
-                {/* Sad emoji */}
-                <motion.div variants={itemVariants} className="text-center mb-2">
-                    <span className="text-4xl">😔</span>
-                </motion.div>
-
+                {/* Header — flat, professional, no gradient bar or emoji */}
                 <motion.h2
                     variants={itemVariants}
-                    className="text-xl font-bold text-gray-900 text-center mb-2"
+                    className="text-lg font-medium text-gray-900 mb-2"
                 >
-                    We&apos;re sorry we didn&apos;t meet your expectations.
+                    Share your feedback with Chirag Shah &amp; Co. Advocates &amp; Solicitors
                 </motion.h2>
 
                 <motion.p
                     variants={itemVariants}
-                    className="text-gray-500 text-center text-sm mb-8"
+                    className="text-gray-500 text-sm mb-6"
                 >
-                    Your feedback helps us improve {businessName}.
+                    Your response is confidential and helps us improve our services.
                 </motion.p>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Feedback textarea */}
                     <motion.div variants={itemVariants}>
-                        <label htmlFor="feedback-text" className="block text-sm font-semibold text-gray-700 mb-2">
-                            What went wrong? <span className="text-red-400">*</span>
+                        <label htmlFor="feedback-text" className="block text-sm font-medium text-gray-700 mb-1.5">
+                            What went wrong? <span className="text-red-500">*</span>
                         </label>
                         <textarea
                             id="feedback-text"
@@ -240,9 +233,11 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             }}
                             placeholder="Tell us about your experience..."
                             rows={4}
-                            className={`w-full px-4 py-3 rounded-xl border-2 min-h-[48px] ${
-                                error ? 'border-red-300 focus:border-red-400' : 'border-gray-100 focus:border-indigo-400'
-                            } bg-gray-50/50 text-gray-800 text-sm resize-none transition-all duration-200 placeholder:text-gray-400`}
+                            className={`w-full px-3.5 py-2.5 rounded-md border text-sm text-gray-800 resize-none transition-all duration-150 placeholder:text-gray-400 bg-white min-h-[48px] ${
+                                error
+                                    ? 'border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                                    : 'border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                            }`}
                         />
                         {error && (
                             <motion.p
@@ -258,40 +253,42 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                         )}
                     </motion.div>
 
-                    {/* === Media Upload Zone === */}
+                    {/* === Media Upload Zone — clean, flat Google-style === */}
                     <motion.div variants={itemVariants}>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Attach Photos or Videos <span className="text-gray-400 font-normal">(optional)</span>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Attachments <span className="text-gray-400 font-normal">(optional)</span>
                         </label>
 
-                        {/* Drop Zone */}
+                        {/* Flat upload area */}
                         <div
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
                             onClick={() => fileInputRef.current?.click()}
-                            className={`relative cursor-pointer rounded-xl border-2 border-dashed transition-all duration-300 ${
+                            className={`relative cursor-pointer rounded-md border transition-all duration-150 ${
                                 isDragOver
-                                    ? 'drag-over'
-                                    : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/30'
+                                    ? 'border-blue-500 bg-blue-50'
+                                    : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
                             } ${mediaFiles.length >= MAX_FILES ? 'opacity-50 pointer-events-none' : ''}`}
                         >
-                            <div className="flex flex-col items-center justify-center py-6 px-4">
+                            <div className="flex items-center gap-3 py-3.5 px-4">
                                 <motion.div
-                                    animate={isDragOver ? { scale: 1.1, y: -4 } : { scale: 1, y: 0 }}
+                                    animate={isDragOver ? { scale: 1.05 } : { scale: 1 }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                    className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center mb-3"
                                 >
-                                    <svg className="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    {/* Paperclip / attachment icon */}
+                                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                                     </svg>
                                 </motion.div>
-                                <p className="text-sm font-medium text-gray-600 mb-1">
-                                    {isDragOver ? 'Drop files here' : 'Drag & drop or tap to browse'}
-                                </p>
-                                <p className="text-xs text-gray-400">
-                                    Images & videos · Max {MAX_SIZE_MB}MB each · Up to {MAX_FILES} files
-                                </p>
+                                <div>
+                                    <p className="text-sm text-[#1a73e8] font-medium">
+                                        {isDragOver ? 'Drop files here' : 'Add files'}
+                                    </p>
+                                    <p className="text-xs text-gray-400">
+                                        Images &amp; videos · Max {MAX_SIZE_MB}MB · Up to {MAX_FILES} files
+                                    </p>
+                                </div>
                             </div>
 
                             <input
@@ -314,7 +311,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                     initial={{ opacity: 0, y: -4 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -4 }}
-                                    className="text-amber-600 text-xs mt-2 flex items-center gap-1"
+                                    className="text-red-500 text-xs mt-2 flex items-center gap-1"
                                 >
                                     <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -331,7 +328,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className="grid grid-cols-3 gap-3 mt-4"
+                                    className="grid grid-cols-3 gap-2.5 mt-3"
                                 >
                                     {mediaFiles.map((mf) => (
                                         <motion.div
@@ -340,7 +337,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.8 }}
                                             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                                            className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 group"
+                                            className="relative aspect-square rounded-md overflow-hidden bg-gray-100 group"
                                         >
                                             {/* Preview */}
                                             {mf.type === 'image' ? (
@@ -361,7 +358,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
 
                                             {/* Video badge */}
                                             {mf.type === 'video' && mf.status === 'done' && (
-                                                <div className="absolute bottom-1.5 left-1.5 bg-black/60 backdrop-blur-sm rounded-md px-1.5 py-0.5 flex items-center gap-1">
+                                                <div className="absolute bottom-1.5 left-1.5 bg-black/60 backdrop-blur-sm rounded px-1.5 py-0.5 flex items-center gap-1">
                                                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
                                                         <path d="M8 5v14l11-7z" />
                                                     </svg>
@@ -418,7 +415,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                                 <motion.div
                                                     initial={{ opacity: 0, scale: 0 }}
                                                     animate={{ opacity: 1, scale: 1 }}
-                                                    className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm"
+                                                    className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shadow-sm"
                                                 >
                                                     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -449,7 +446,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
 
                     {/* Email */}
                     <motion.div variants={itemVariants}>
-                        <label htmlFor="feedback-email" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="feedback-email" className="block text-sm font-medium text-gray-700 mb-1.5">
                             Email <span className="text-gray-400 font-normal">(optional)</span>
                         </label>
                         <input
@@ -458,13 +455,13 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="your@email.com"
-                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-800 text-sm transition-all duration-200 focus:border-indigo-400 placeholder:text-gray-400 min-h-[48px]"
+                            className="w-full px-3.5 py-2.5 rounded-md border border-gray-300 bg-white text-gray-800 text-sm transition-all duration-150 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 min-h-[44px]"
                         />
                     </motion.div>
 
                     {/* Phone */}
                     <motion.div variants={itemVariants}>
-                        <label htmlFor="feedback-phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="feedback-phone" className="block text-sm font-medium text-gray-700 mb-1.5">
                             Phone <span className="text-gray-400 font-normal">(optional)</span>
                         </label>
                         <input
@@ -472,8 +469,8 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             type="tel"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+1 (555) 000-0000"
-                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-800 text-sm transition-all duration-200 focus:border-indigo-400 placeholder:text-gray-400 min-h-[48px]"
+                            placeholder="+91 98765 43210"
+                            className="w-full px-3.5 py-2.5 rounded-md border border-gray-300 bg-white text-gray-800 text-sm transition-all duration-150 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 min-h-[44px]"
                         />
                     </motion.div>
 
@@ -482,23 +479,18 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[48px]"
+                            className="w-full bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium py-3 px-6 rounded-full transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[44px] text-sm"
                         >
                             {loading ? (
                                 <>
-                                    <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                                     </svg>
                                     Submitting...
                                 </>
                             ) : (
-                                <>
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                    </svg>
-                                    Submit Feedback
-                                </>
+                                'Submit Feedback'
                             )}
                         </button>
                     </motion.div>
