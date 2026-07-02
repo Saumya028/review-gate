@@ -1,6 +1,7 @@
 import os
 import json
 import httpx
+import random
 from typing import List, Optional
 from dotenv import load_dotenv
 
@@ -18,64 +19,63 @@ async def generate_review_with_ai(
     selected_service: str = "",
 ) -> List[str]:
     """
-    Generate multiple positive review variations using OpenRouter API
-
-    Args:
-        business_name: Name of the business
-        business_type: Type/category of the business
-        keywords: List of keywords to include in the review
-        custom_text: Optional additional context from the customer
-        selected_service: The specific legal service the client received
-
-    Returns:
-        List of generated review text variations (5 options)
+    Generate multiple positive review variations using OpenRouter API with high dynamic variability.
     """
 
     if not OPENROUTER_API_KEY:
-        # Use fallback if no API key configured
         return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
 
     keywords_text = ", ".join(keywords) if keywords else "legal expertise"
     custom_section = f"\nAdditional Customer Notes: {custom_text}" if custom_text else ""
     service_section = f"\nSpecific Legal Service Used: {selected_service}" if selected_service else ""
 
-    system_prompt = """You are writing genuine, detailed positive client testimonials for a reputable law firm. You must return EXACTLY a JSON array of 5 different review variations. Follow these guidelines strictly:
+    # DYNAMIC VARIABILITY GENERATOR: Injecting randomized structural seeds directly into the system prompt 
+    # forcing the LLM to completely alter its response layout architecture on every call.
+    perspectives = [
+        "Focus on the initial emotional relief and the strategic legal protection provided.",
+        "Highlight the analytical thoroughness, detailed documentation clarity, and boardroom preparation.",
+        "Emphasize the seamless navigation of legal red tape, institutional authorities, and deep regulatory knowledge.",
+        "Underline the meticulous legal research, cross-examination support, or responsive updates.",
+        "Center the narrative around protection of critical rights, financial interests, and long-term security."
+    ]
+    random.shuffle(perspectives)
+
+    system_prompt = f"""You are writing genuine, highly detailed positive client testimonials for a reputable law firm. You must return EXACTLY a JSON array of 5 completely different review variations. Follow these guidelines strictly:
 
 CRITICAL LENGTH REQUIREMENT:
 - Every single review variation MUST be a comprehensive paragraph containing a MINIMUM of 4-5 full sentences.
 - Each review MUST be between 70 and 130 words. No exceptions.
 - ABSOLUTELY DO NOT generate any short, casual, or punchy 1-2 sentence reviews. Any review under 4 sentences is UNACCEPTABLE.
 
-VARIATION STRUCTURE (all must be long-form paragraphs):
-1. "Grateful Client" — A heartfelt, detailed testimonial emphasizing personal relief and trust. Start with a personal situation or emotional hook.
-2. "Recommending Professional" — A thorough recommendation focusing on competence and professionalism. Start with a recommendation or referral angle.
-3. "Impressed First-Timer" — A detailed account from someone using legal services for the first time. Start with initial apprehension turning to confidence.
-4. "Returning Client" — A loyal client sharing why they keep coming back. Start with how long or how many times they have used the firm.
-5. "Business/Society Representative" — A testimonial from a housing society member, developer, or business owner. Start with the organizational context.
+VARIATION PERSPECTIVES FOR THIS RUN (Ensure each variation takes a completely different unique route):
+1. Option 1: {perspectives[0]}
+2. Option 2: {perspectives[1]}
+3. Option 3: {perspectives[2]}
+4. Option 4: {perspectives[3]}
+5. Option 5: {perspectives[4]}
 
 MANDATORY LOCAL SEO ANCHORS (embed naturally based on context — do NOT force all into every review):
 - Location references: "Andheri", "Mumbai", "Maharashtra"
 - Legal body references (use where relevant to the service): "RERA", "Tribunals", "Consumer Commissions", "Courts", "Government Authorities"
 - Embed the specific legal service name naturally in each review.
 
-DIVERSITY RULES:
-- Each review MUST start with a completely different opening phrase. BANNED openings: "Chirag Shah & Co is...", "Chirag Shah & Co has...", "I visited Chirag Shah...", "The team at Chirag Shah...". Use varied hooks: questions, anecdotes, recommendations, emotional statements, context-setting phrases.
-- Use different sentence structures, vocabulary, and perspectives across all 5 variations.
-- Vary how the firm name is referenced: full name, "the firm", "their team", "Advocate Shah and his colleagues", etc.
+STRICT DIVERSITY & RANDOMIZATION RULES:
+- Each review MUST start with a completely different unique structural hook. 
+- BANNED openings: "Chirag Shah & Co is...", "Chirag Shah & Co has...", "I visited Chirag Shah...", "The team at Chirag Shah...".
+- Vary how the firm name is referenced across options: full name, "the firm", "their legal team", "Advocate Shah and his associates", "this boutique legal practice".
+- Use completely different sentence syntax structures, vocabulary patterns, and client personas.
 
 TONE RULES:
-- Natural and authentic — sounds like a real person wrote it, not marketing copy.
-- Professional but warm. No excessive exclamation marks (max 1 per review).
+- Natural and authentic — sounds like a real person wrote it, not marketing copy. No excessive exclamation marks.
 - Integrate the provided keywords and service name organically.
-- Do NOT use phrases like "I highly recommend" in more than 2 of the 5 reviews.
 
 OUTPUT FORMAT:
-- Output ONLY a valid JSON array of 5 strings, nothing else. No markdown, no labels, no numbering.
-- Example: ["Review 1 full paragraph here.", "Review 2 full paragraph here.", "Review 3 full paragraph here.", "Review 4 full paragraph here.", "Review 5 full paragraph here."]"""
+- Output ONLY a valid JSON array of 5 strings, nothing else. No markdown, no labels, no numbering."""
 
     user_prompt = f"""Firm Name: {business_name}
 Firm Type: {business_type}
 Client-Selected Keywords: {keywords_text}{service_section}{custom_section}
+Random Seed Value: {random.randint(10000, 99999)}
 
 Generate the 5 long-form review variations as a JSON array:"""
 
@@ -95,7 +95,7 @@ Generate the 5 long-form review variations as a JSON array:"""
                         {"role": "user", "content": user_prompt},
                     ],
                     "max_tokens": 1200,
-                    "temperature": 0.85,
+                    "temperature": 0.88,  # Increased temperature for higher creative variation
                 },
                 timeout=45.0,
             )
@@ -109,13 +109,8 @@ Generate the 5 long-form review variations as a JSON array:"""
             else:
                 raise ValueError("Unexpected response format from OpenRouter API")
 
-    except httpx.HTTPStatusError as e:
-        print(f"HTTP Error: {e.response.status_code} - {e.response.text}")
-        # Fall back to template generation
-        return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
     except Exception as e:
-        print(f"Error generating review: {str(e)}")
-        # Fall back to template generation
+        print(f"Error generating review, falling back: {str(e)}")
         return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
 
 
@@ -127,52 +122,26 @@ def parse_review_variations(
     custom_text: Optional[str] = "",
     selected_service: str = "",
 ) -> List[str]:
-    """
-    Robustly parse AI response into a list of review strings.
-    Falls back to wrapping single reviews or using templates if JSON parsing fails.
-    """
-    # Try direct JSON parse first
+    """Robustly parse AI response into a list of review strings."""
     try:
         parsed = json.loads(raw_text)
         if isinstance(parsed, list) and len(parsed) >= 2:
-            # Filter out any non-string entries and clean quotes
-            reviews = []
-            for item in parsed:
-                if isinstance(item, str) and item.strip():
-                    text = item.strip()
-                    if text.startswith('"') and text.endswith('"'):
-                        text = text[1:-1]
-                    reviews.append(text)
+            reviews = [item.strip() for item in parsed if isinstance(item, str) and item.strip()]
             if len(reviews) >= 2:
                 return reviews[:5]
     except json.JSONDecodeError:
         pass
 
-    # Try to find JSON array within the text (model sometimes wraps in markdown)
     try:
         start = raw_text.find("[")
         end = raw_text.rfind("]") + 1
         if start != -1 and end > start:
-            json_str = raw_text[start:end]
-            parsed = json.loads(json_str)
+            parsed = json.loads(raw_text[start:end])
             if isinstance(parsed, list) and len(parsed) >= 2:
-                reviews = [item.strip() for item in parsed if isinstance(item, str) and item.strip()]
-                if len(reviews) >= 2:
-                    return reviews[:5]
-    except (json.JSONDecodeError, ValueError):
+                return [item.strip() for item in parsed if isinstance(item, str) and item.strip()][:5]
+    except Exception:
         pass
 
-    # If we got a single review text, wrap it and generate fallback variations
-    single_review = raw_text.strip()
-    if single_review.startswith('"') and single_review.endswith('"'):
-        single_review = single_review[1:-1]
-
-    if single_review and len(single_review) > 10:
-        # Use the single AI review as the first option, supplement with fallbacks
-        fallbacks = generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
-        return [single_review] + fallbacks[1:]
-
-    # Full fallback
     return generate_fallback_review(business_name, business_type, keywords, custom_text, selected_service)
 
 
@@ -183,54 +152,53 @@ def generate_fallback_review(
     custom_text: Optional[str] = "",
     selected_service: str = "",
 ) -> List[str]:
-    """Generate fallback review variations without API — long-form, SEO-optimized"""
-    reviews = []
+    """Generate dynamic fallback review variations by swapping sentence segments randomly."""
     service_ref = selected_service if selected_service else "legal services"
     kw_text = " and ".join(keywords[:2]) if keywords else "professional guidance"
 
-    # Variation 1: Grateful Client perspective
-    reviews.append(
-        f"When I first approached {business_name} for {service_ref}, I was overwhelmed by the complexity of my case and unsure about the legal process ahead. "
-        f"From the very first consultation at their Andheri office, the team put me at ease with their {kw_text} and thorough understanding of the matter. "
-        f"They guided me through every step, explaining the implications clearly and ensuring I was always informed about the progress. "
-        f"Their expertise in handling cases across Mumbai courts and tribunals gave me confidence that my matter was in capable hands. "
-        f"I am genuinely grateful for the outcome and would trust them with any legal matter in the future."
-    )
+    # Pools of randomized components to break deterministic loops if API goes down
+    openers = [
+        f"When our organization encountered an intricate challenge requiring reliable counsel for {service_ref}, we turned to {business_name}.",
+        f"Navigating the complexities of {service_ref} in Maharashtra can be exceptionally stressful without true advocacy.",
+        f"Seeking legal support for {service_ref} for the very first time was incredibly intimidating for me.",
+        f"Over the last couple of years, my associates and I have repeatedly relied on {business_name} in Andheri for various complex matters.",
+        f"Resolving a persistent issue regarding {service_ref} required a highly strategic, professional approach."
+    ]
 
-    # Variation 2: Recommending Professional perspective
-    reviews.append(
-        f"If you are looking for a reliable law firm in Mumbai that truly delivers on its promises, I would strongly suggest consulting {business_name} in Andheri. "
-        f"I engaged them for {service_ref} and was impressed by their {kw_text} throughout the entire engagement. "
-        f"What sets them apart is their ability to break down complex legal matters into understandable terms while maintaining the highest level of professionalism. "
-        f"Their familiarity with Maharashtra's legal framework, including proceedings before various courts and government authorities, proved invaluable in my case. "
-        f"The practical advice and strategic approach they offered made the entire process far less stressful than I had anticipated."
-    )
+    bodies = [
+        f"Their team based at the Andheri office immediately showcased absolute mastery, offering clean {kw_text} and distinct clarity regarding our case layout.",
+        f"From our very first session, the level of meticulous preparation and insightful {kw_text} made it obvious that we were in safe hands.",
+        f"They stepped up immediately, deploying profound legal insight and clear {kw_text} that simplified the entire procedural roadmap for us.",
+        f"The firm consistently brings exceptional professionalism to the table, handling deep documentation and presenting strategic advice effortlessly.",
+        f"They tackled our grievances with complete determination, ensuring every element of our strategy was solid and transparent."
+    ]
 
-    # Variation 3: Impressed First-Timer perspective
-    reviews.append(
-        f"Having never dealt with legal matters before, I was quite apprehensive about seeking help for {service_ref}, but my experience with {business_name} completely changed my perspective. "
-        f"Their Andheri, Mumbai office felt welcoming and the initial consultation itself demonstrated their {kw_text} and deep knowledge of the subject. "
-        f"They patiently answered all my questions, no matter how basic, and laid out a clear roadmap for my case. "
-        f"The team's experience with tribunals and consumer commissions in Maharashtra was evident in how confidently they handled the proceedings. "
-        f"I walked away feeling that I had made the right choice, and the successful resolution of my matter confirmed it."
-    )
+    arguments = [
+        f"Their practical exposure across various Mumbai courts and specialized tribunals was completely clear during the proceedings.",
+        f"Having them manage representation before RERA and state government authorities provided an incredible advantage for our position.",
+        f"They protected our long-term rights diligently before consumer commissions and corporate tribunals alike.",
+        f"Their comprehensive understanding of local real estate legal frameworks and regulatory compliance was absolutely outstanding.",
+        f"They handled the entire cross-coordination with regional legal frameworks and judicial benches seamlessly."
+    ]
 
-    # Variation 4: Returning Client perspective
-    reviews.append(
-        f"Over the past several years, I have consulted {business_name} on multiple occasions for different legal needs, and their consistency in delivering excellent {service_ref} is truly commendable. "
-        f"Each time I visit their Andheri office, the team demonstrates the same level of dedication, {kw_text}, and attention to detail that I experienced during my very first engagement. "
-        f"Whether it involves court appearances in Mumbai or documentation work requiring coordination with government authorities, they handle everything with remarkable efficiency. "
-        f"Their understanding of Maharashtra's legal landscape and their network across various courts and RERA authorities has been extremely beneficial. "
-        f"I have recommended them to several friends and family members, and everyone has had equally positive experiences."
-    )
+    conclusions = [
+        f"The favorable resolution achieved speaks volumes about their advocacy. I completely trust this practice with all our legal needs.",
+        f"We secured an outstanding outcome thanks to their dedication. I strongly suggest consulting their team if you require practical legal solutions.",
+        f"Their representation surpassed our expectations. They are undoubtedly our go-to advocates across Mumbai from this point forward.",
+        f"I am genuinely relieved by the thorough and positive outcome. Their structured guidance saved us immense stress and resources.",
+        f"An exceptional experience from start to finish. Their commitment to client safety and successful representation is truly commendable."
+    ]
 
-    # Variation 5: Business/Society Representative perspective
-    reviews.append(
-        f"As a representative of our housing society in Andheri, I can say that engaging {business_name} for {service_ref} was one of the best decisions our managing committee made. "
-        f"The firm demonstrated exceptional {kw_text} and a thorough understanding of the legal complexities involved in society matters across Mumbai. "
-        f"They represented us effectively before RERA and various tribunals, always keeping our committee updated with clear, jargon-free communication. "
-        f"Their strategic approach to navigating Maharashtra's regulatory framework saved us both time and resources, and the outcome exceeded our expectations. "
-        f"We continue to retain their services for ongoing legal matters and have complete confidence in their counsel."
-    )
+    # Shuffle everything to guarantee unique text output permutations on every single reload
+    random.shuffle(openers)
+    random.shuffle(bodies)
+    random.shuffle(arguments)
+    random.shuffle(conclusions)
+
+    reviews = []
+    for i in range(5):
+        # Assemble completely randomized variants combining the sections
+        review_paragraph = f"{openers[i]} {bodies[i]} {arguments[i]} {conclusions[i]}"
+        reviews.append(review_paragraph)
 
     return reviews
