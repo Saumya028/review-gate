@@ -235,8 +235,8 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             placeholder="Tell us about your experience..."
                             rows={4}
                             className={`w-full px-3.5 py-2.5 rounded-md border text-sm text-gray-800 resize-none transition-all duration-150 placeholder:text-gray-400 bg-white min-h-[48px] ${error
-                                    ? 'border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-500'
-                                    : 'border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                                ? 'border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                                : 'border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
                                 }`}
                         />
                         {error && (
@@ -266,8 +266,8 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             onDrop={handleDrop}
                             onClick={() => fileInputRef.current?.click()}
                             className={`relative cursor-pointer rounded-md border transition-all duration-150 ${isDragOver
-                                    ? 'border-blue-500 bg-blue-50'
-                                    : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
                                 } ${mediaFiles.length >= MAX_FILES ? 'opacity-50 pointer-events-none' : ''}`}
                         >
                             <div className="flex items-center gap-3 py-3.5 px-4">

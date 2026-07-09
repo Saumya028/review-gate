@@ -32,8 +32,8 @@ async def generate_review_with_ai(
     # DYNAMIC VARIABILITY GENERATOR: Injecting randomized structural seeds directly into the system prompt 
     # forcing the LLM to completely alter its response layout architecture on every call.
     perspectives = [
-        "Focus on the initial emotional relief and the strategic legal protection provided.",
         "Highlight the analytical thoroughness, detailed documentation clarity, and boardroom preparation.",
+        "Focus on the initial emotional relief and the strategic legal protection provided.",
         "Emphasize the seamless navigation of legal red tape, institutional authorities, and deep regulatory knowledge.",
         "Underline the meticulous legal research, cross-examination support, or responsive updates.",
         "Center the narrative around protection of critical rights, financial interests, and long-term security."
@@ -95,7 +95,7 @@ Generate the 5 long-form review variations as a JSON array:"""
                         {"role": "user", "content": user_prompt},
                     ],
                     "max_tokens": 1200,
-                    "temperature": 1,  # Increased temperature for higher creative variation
+                    "temperature": 0.75,  # Increased temperature for higher creative variation
                 },
                 timeout=45.0,
             )
