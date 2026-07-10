@@ -95,7 +95,7 @@ Generate the 5 long-form review variations as a JSON array:"""
                         {"role": "user", "content": user_prompt},
                     ],
                     "max_tokens": 1200,
-                    "temperature": 0.75,  # Increased temperature for higher creative variation
+                    "temperature": 0.5,  # Increased temperature for higher creative variation
                 },
                 timeout=45.0,
             )
