@@ -185,10 +185,16 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
     const currentKeywords = selectedService ? SERVICE_MAP[selectedService] || [] : [];
 
     return (
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <div
+            className="border border-[#e8e2d6] shadow-sm overflow-hidden rounded-sm"
+            style={{ backgroundColor: 'var(--bg-card)' }}
+        >
+            {/* Premium gold top accent bar */}
+            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#b8943a] to-transparent" />
+
             <div className="p-6 sm:p-8">
                 <AnimatePresence mode="wait">
-                    {/* Phase 1: Service Selection */}
+                    {/* ─── Phase 1: Service Selection ─── */}
                     {phase === 'service' && (
                         <motion.div
                             key="service"
@@ -197,42 +203,52 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                             animate="visible"
                             exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
                         >
-                            {/* Google-style icon */}
-                            <motion.div variants={itemVariants} className="text-center mb-3">
-                                <div className="w-10 h-10 mx-auto rounded-full bg-[#e8f0fe] flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-[#1a73e8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
+                            {/* Section header */}
+                            <motion.div variants={itemVariants} className="mb-6">
+                                <div className="w-10 h-px bg-[#b8943a] mb-5" />
+                                <h2
+                                    className="text-xl mb-1 tracking-wide"
+                                    style={{
+                                        fontFamily: 'var(--font-display, Georgia, serif)',
+                                        color: '#1a1612',
+                                        fontWeight: 400,
+                                    }}
+                                >
+                                    Glad you had a great experience!
+                                </h2>
+                                <p
+                                    className="text-xs tracking-[0.15em] uppercase"
+                                    style={{ color: '#7a7268', fontFamily: 'var(--font-body, sans-serif)' }}
+                                >
+                                    Which legal service did you use?
+                                </p>
                             </motion.div>
 
-                            <motion.h2
-                                variants={itemVariants}
-                                className="text-lg font-medium text-gray-900 text-center mb-1"
-                            >
-                                Glad you had a great experience!
-                            </motion.h2>
+                            <motion.div variants={itemVariants} className="w-full h-px bg-[#e8e2d6] mb-6" />
 
-                            <motion.p
-                                variants={itemVariants}
-                                className="text-gray-500 text-center text-sm mb-6"
-                            >
-                                Which legal service did you use?
-                            </motion.p>
-
-                            {/* Service list */}
+                            {/* Service list — flat, sharp, legal */}
                             <motion.div
                                 variants={itemVariants}
-                                className="space-y-2 mb-4 max-h-[320px] overflow-y-auto pr-1"
+                                className="space-y-2 mb-4 max-h-[340px] overflow-y-auto pr-0.5"
                             >
                                 {SERVICE_NAMES.map((service) => (
                                     <button
                                         key={service}
                                         onClick={() => handleServiceSelect(service)}
-                                        className="w-full text-left px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-[#f8f9fa] hover:border-gray-300 text-sm text-gray-700 font-medium transition-all duration-150 flex items-center justify-between group min-h-[44px]"
+                                        className="w-full text-left px-4 py-3.5 border border-[#e8e2d6] bg-[#fefcf8] hover:bg-[#f5f3ef] hover:border-[#c9a96e] text-sm flex items-center justify-between group min-h-[48px] transition-all duration-150 rounded-sm"
+                                        style={{
+                                            color: '#4a4540',
+                                            fontFamily: 'var(--font-body, sans-serif)',
+                                        }}
                                     >
-                                        {service}
-                                        <svg className="w-4 h-4 text-gray-400 group-hover:text-[#1a73e8] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <span>{service}</span>
+                                        <svg
+                                            className="w-3.5 h-3.5 flex-shrink-0 transition-colors duration-150 group-hover:text-[#b8943a]"
+                                            style={{ color: '#c9a96e' }}
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
                                     </button>
@@ -241,7 +257,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                         </motion.div>
                     )}
 
-                    {/* Phase 2: Keyword Chips */}
+                    {/* ─── Phase 2: Keyword Selection ─── */}
                     {phase === 'keywords' && (
                         <motion.div
                             key="keywords"
@@ -250,31 +266,48 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                             animate="visible"
                             exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
                         >
-                            {/* Selected service badge */}
-                            <motion.div variants={itemVariants} className="flex items-center justify-center gap-2 mb-4">
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e8f0fe] text-[#1a73e8] text-xs font-medium">
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            {/* Selected service badge — flat gold pill */}
+                            <motion.div variants={itemVariants} className="flex items-center justify-center gap-2 mb-5">
+                                <span
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-[0.1em] uppercase border"
+                                    style={{
+                                        backgroundColor: 'rgba(184, 148, 58, 0.08)',
+                                        borderColor: '#c9a96e',
+                                        color: '#8a6c25',
+                                        fontFamily: 'var(--font-body, sans-serif)',
+                                        borderRadius: '2px',
+                                    }}
+                                >
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                                     </svg>
                                     {selectedService}
                                 </span>
                             </motion.div>
 
-                            <motion.h2
-                                variants={itemVariants}
-                                className="text-lg font-medium text-gray-900 text-center mb-1"
-                            >
-                                What stood out to you?
-                            </motion.h2>
+                            {/* Header */}
+                            <motion.div variants={itemVariants} className="mb-5">
+                                <h2
+                                    className="text-xl mb-1 tracking-wide text-center"
+                                    style={{
+                                        fontFamily: 'var(--font-display, Georgia, serif)',
+                                        color: '#1a1612',
+                                        fontWeight: 400,
+                                    }}
+                                >
+                                    What stood out to you?
+                                </h2>
+                                <p
+                                    className="text-xs tracking-[0.15em] uppercase text-center"
+                                    style={{ color: '#7a7268', fontFamily: 'var(--font-body, sans-serif)' }}
+                                >
+                                    Select the aspects you appreciated most
+                                </p>
+                            </motion.div>
 
-                            <motion.p
-                                variants={itemVariants}
-                                className="text-gray-500 text-center text-sm mb-6"
-                            >
-                                Select the aspects you appreciated most
-                            </motion.p>
+                            <motion.div variants={itemVariants} className="w-full h-px bg-[#e8e2d6] mb-5" />
 
-                            {/* Keyword chips — Google filter style */}
+                            {/* Keyword chips — flat, gold-accent selection state */}
                             <motion.div
                                 variants={itemVariants}
                                 className="flex flex-wrap gap-2 justify-center mb-6"
@@ -285,23 +318,30 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                         <motion.button
                                             key={keyword}
                                             onClick={() => toggleKeyword(keyword)}
-                                            className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-150 border flex items-center gap-1.5 min-h-[36px] ${
+                                            className={`px-3.5 py-2 text-xs font-medium tracking-wide border flex items-center gap-1.5 min-h-[36px] transition-all duration-150 ${
                                                 isSelected
-                                                    ? 'bg-[#e8f0fe] border-[#1a73e8] text-[#1a73e8]'
-                                                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
+                                                    ? 'border-[#b8943a] text-[#8a6c25]'
+                                                    : 'border-[#e8e2d6] hover:border-[#c9a96e] hover:bg-[#f5f3ef]'
                                             }`}
-                                            whileTap={{ scale: 0.95 }}
+                                            style={{
+                                                backgroundColor: isSelected ? 'rgba(184, 148, 58, 0.09)' : '#fefcf8',
+                                                color: isSelected ? '#8a6c25' : '#4a4540',
+                                                fontFamily: 'var(--font-body, sans-serif)',
+                                                borderRadius: '2px',
+                                                textTransform: 'none',
+                                            }}
+                                            whileTap={{ scale: 0.96 }}
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{
                                                 opacity: 1,
                                                 scale: 1,
-                                                transition: { delay: 0.1 + index * 0.04 },
+                                                transition: { delay: 0.08 + index * 0.035 },
                                             }}
                                         >
-                                            {keyword}
                                             {isSelected && (
                                                 <motion.svg
-                                                    className="w-3.5 h-3.5 text-[#1a73e8]"
+                                                    className="w-3 h-3"
+                                                    style={{ color: '#b8943a' }}
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -312,6 +352,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                                                 </motion.svg>
                                             )}
+                                            {keyword}
                                         </motion.button>
                                     );
                                 })}
@@ -322,21 +363,24 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                 <motion.p
                                     initial={{ opacity: 0, y: -4 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="text-red-500 text-sm text-center mb-4 flex items-center justify-center gap-1.5"
+                                    className="text-red-500 text-xs text-center mb-4 flex items-center justify-center gap-1.5 tracking-wide"
+                                    style={{ fontFamily: 'var(--font-body, sans-serif)' }}
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01" />
                                     </svg>
                                     {error}
                                 </motion.p>
                             )}
 
-                            {/* Generate button — Google Blue */}
+                            <motion.div variants={itemVariants} className="w-full h-px bg-[#e8e2d6] mb-5" />
+
+                            {/* Generate button — gold, flat, tracked */}
                             <motion.div variants={itemVariants}>
                                 <button
                                     onClick={handleGenerate}
                                     disabled={loading}
-                                    className="w-full bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium py-3 px-6 rounded-full transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 min-h-[48px] text-sm"
+                                    className="btn-gold w-full disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[48px]"
                                 >
                                     {loading ? (
                                         <>
@@ -348,7 +392,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                         </>
                                     ) : (
                                         <>
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                             </svg>
                                             Generate Reviews
@@ -357,7 +401,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                 </button>
                             </motion.div>
 
-                            {/* Chip count + back */}
+                            {/* Back + chip count row */}
                             <motion.div variants={itemVariants} className="flex items-center justify-between mt-4">
                                 <button
                                     onClick={() => {
@@ -365,15 +409,18 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                                         setSelectedService('');
                                         setSelectedKeywords([]);
                                     }}
-                                    className="text-[#1a73e8] hover:text-[#1557b0] text-sm font-medium flex items-center gap-1 transition-colors min-h-[36px]"
+                                    className="btn-ghost-gold flex items-center gap-1.5 px-3 py-2 text-xs min-h-[36px]"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                     </svg>
                                     Change service
                                 </button>
                                 {selectedKeywords.length > 0 && (
-                                    <span className="text-xs text-gray-400">
+                                    <span
+                                        className="text-xs tracking-wider uppercase"
+                                        style={{ color: '#c9a96e', fontFamily: 'var(--font-body, sans-serif)' }}
+                                    >
                                         {selectedKeywords.length} selected
                                     </span>
                                 )}
@@ -381,7 +428,7 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                         </motion.div>
                     )}
 
-                    {/* Phase 3: Review Display */}
+                    {/* ─── Phase 3: Review Display ─── */}
                     {phase === 'review' && generatedReviews && (
                         <motion.div
                             key="review"
@@ -389,21 +436,28 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                         >
-                            <div className="text-center mb-2">
-                                <div className="w-10 h-10 mx-auto rounded-full bg-[#e8f0fe] flex items-center justify-center mb-3">
-                                    <svg className="w-5 h-5 text-[#1a73e8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                </div>
+                            {/* Header */}
+                            <div className="mb-6">
+                                <div className="w-10 h-px bg-[#b8943a] mb-5" />
+                                <h2
+                                    className="text-xl mb-1 tracking-wide"
+                                    style={{
+                                        fontFamily: 'var(--font-display, Georgia, serif)',
+                                        color: '#1a1612',
+                                        fontWeight: 400,
+                                    }}
+                                >
+                                    Your reviews are ready
+                                </h2>
+                                <p
+                                    className="text-xs tracking-[0.15em] uppercase"
+                                    style={{ color: '#7a7268', fontFamily: 'var(--font-body, sans-serif)' }}
+                                >
+                                    Choose your favourite &mdash; browse {generatedReviews.length} options
+                                </p>
                             </div>
 
-                            <h2 className="text-lg font-medium text-gray-900 text-center mb-1">
-                                Your reviews are ready
-                            </h2>
-
-                            <p className="text-gray-500 text-center text-sm mb-6">
-                                Choose your favorite below — tap to browse {generatedReviews.length} options
-                            </p>
+                            <div className="w-full h-px bg-[#e8e2d6] mb-6" />
 
                             <ReviewDisplay
                                 reviews={generatedReviews}
@@ -414,9 +468,9 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                             {/* Back button */}
                             <button
                                 onClick={() => setPhase('keywords')}
-                                className="w-full mt-4 text-[#1a73e8] hover:text-[#1557b0] text-sm font-medium py-2 transition-colors flex items-center justify-center gap-1.5 min-h-[36px]"
+                                className="btn-ghost-gold w-full mt-4 flex items-center justify-center gap-1.5 min-h-[40px]"
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
                                 Back to keywords
@@ -425,6 +479,9 @@ export default function PositiveReviewFlow({ business, onSuccess, onGenerateRevi
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* Gold bottom accent bar */}
+            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#b8943a] to-transparent" />
         </div>
     );
 }

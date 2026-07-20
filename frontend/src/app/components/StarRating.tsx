@@ -36,7 +36,7 @@ export default function StarRating({ onRate }: StarRatingProps) {
 
     return (
         <motion.div
-            className="flex justify-center gap-2 sm:gap-3 my-8"
+            className="flex justify-center gap-2 sm:gap-3 my-6"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -51,20 +51,25 @@ export default function StarRating({ onRate }: StarRatingProps) {
                         onMouseEnter={() => setHoveredRating(rating)}
                         onMouseLeave={() => setHoveredRating(null)}
                         onTouchStart={() => setHoveredRating(rating)}
-                        className="focus:outline-none transform transition-all touch-target flex items-center justify-center p-1"
-                        whileHover={{ scale: 1.15 }}
+                        className={`focus:outline-none transform transition-all duration-200 touch-target flex items-center justify-center p-2 rounded-xl ${
+                            isFilled
+                                ? 'border-2 border-[#D4AF37] bg-[#FDFBF7] scale-110'
+                                : 'border-2 border-transparent bg-transparent'
+                        }`}
                         whileTap={{ scale: 0.85, rotate: -8 }}
                         aria-label={`Rate ${rating} star${rating !== 1 ? 's' : ''}`}
                     >
                         <motion.svg
-                            className={`w-12 h-12 sm:w-14 sm:h-14 transition-colors duration-200 ${
-                                isFilled
-                                    ? 'fill-yellow-400 text-yellow-400 drop-shadow-[0_2px_8px_rgba(250,204,21,0.4)]'
-                                    : 'fill-gray-200 text-gray-200'
+                            className={`w-11 h-11 sm:w-12 sm:h-12 transition-colors duration-200 ${
+                                isFilled ? 'drop-shadow-[0_2px_10px_rgba(212,175,55,0.55)]' : ''
                             }`}
+                            style={{
+                                fill: isFilled ? '#D4AF37' : '#e8e2d6',
+                                color: isFilled ? '#D4AF37' : '#e8e2d6',
+                            }}
                             viewBox="0 0 24 24"
                             animate={{
-                                scale: isFilled ? 1.1 : 1,
+                                scale: isFilled ? 1.08 : 1,
                             }}
                             transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                         >

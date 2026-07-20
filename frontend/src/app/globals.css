@@ -13,16 +13,49 @@ html {
     -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-    background-color: #f8fafc;
-    color: #1e293b;
-    font-weight: 400;
-    line-height: 1.6;
+/* ===== Design Tokens — Premium Legal Palette ===== */
+:root {
+    /* Brand Gold / Amber */
+    --gold: #b8943a;
+    --gold-light: #d4a853;
+    --gold-dark: #8a6c25;
+    --gold-muted: #c9a96e;
+
+    /* Neutrals — warm charcoal & cream */
+    --charcoal: #1a1612;
+    --charcoal-mid: #2d2520;
+    --body-text: #4a4540;
+    --muted-text: #7a7268;
+    --rule: #e8e2d6;
+    --rule-accent: #c9a96e;
+    --bg-page: #f5f3ef;
+    --bg-card: #fefcf8;
+    --bg-surface: #f9f7f2;
+
+    /* Typography */
+    --font-display: var(--font-display, 'Georgia', serif);
+    --font-body: var(--font-body, 'Arial', sans-serif);
 }
 
-/* ===== Custom Scrollbar ===== */
+body {
+    background-color: var(--bg-page);
+    color: var(--charcoal);
+    font-weight: 400;
+    line-height: 1.65;
+}
+
+/* ===== Typography Utilities ===== */
+.font-display {
+    font-family: var(--font-display), 'Georgia', serif;
+}
+
+.font-body {
+    font-family: var(--font-body), 'Arial', sans-serif;
+}
+
+/* ===== Custom Scrollbar — Warm Amber ===== */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -30,12 +63,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 99px;
+    background: var(--gold-muted);
+    border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: var(--gold);
 }
 
 /* ===== Transition Defaults ===== */
@@ -49,28 +82,55 @@ textarea {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ===== Focus Styles ===== */
+/* ===== Focus Styles — Gold Ring ===== */
 input:focus,
 textarea:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 2px rgba(184, 148, 58, 0.25);
 }
 
-/* ===== Selection ===== */
+/* ===== Selection — Gold ===== */
 ::selection {
-    background-color: rgba(99, 102, 241, 0.15);
-    color: #312e81;
+    background-color: rgba(184, 148, 58, 0.18);
+    color: var(--gold-dark);
 }
 
-/* ===== Toast Animations ===== */
+/* ===== Elegant Rule Divider ===== */
+.rule-gold {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-muted), transparent);
+}
+
+.rule-thin {
+    border: none;
+    height: 1px;
+    background-color: var(--rule);
+}
+
+/* ===== Toast Animation ===== */
 @keyframes slideIn {
     from {
         transform: translateX(400px);
         opacity: 0;
     }
+
     to {
         transform: translateX(0);
         opacity: 1;
+    }
+}
+
+/* ===== Elegant Fade-In ===== */
+@keyframes elegantFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -79,6 +139,7 @@ textarea:focus {
         opacity: 0;
         transform: translateY(16px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -89,35 +150,33 @@ textarea:focus {
     0% {
         background-position: -200% 0;
     }
+
     100% {
         background-position: 200% 0;
     }
 }
 
-/* ===== Gradient Text Utility ===== */
+/* ===== Gold Gradient Text Utility ===== */
 .gradient-text {
-    background: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #06b6d4 100%);
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold-muted) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-/* ===== Glassmorphism Card ===== */
-.glass-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+/* ===== Refined Card ===== */
+.legal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(26, 22, 18, 0.06), 0 4px 16px rgba(26, 22, 18, 0.04);
 }
 
 /* ===== Shimmer Loading ===== */
 .shimmer {
-    background: linear-gradient(
-        90deg,
-        rgba(0, 0, 0, 0.04) 25%,
-        rgba(0, 0, 0, 0.08) 50%,
-        rgba(0, 0, 0, 0.04) 75%
-    );
+    background: linear-gradient(90deg,
+            rgba(0, 0, 0, 0.03) 25%,
+            rgba(184, 148, 58, 0.07) 50%,
+            rgba(0, 0, 0, 0.03) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
 }
@@ -138,19 +197,22 @@ select,
     touch-action: manipulation;
 }
 
-/* ===== Upload Zone Styles ===== */
+/* ===== Upload Zone Styles — Amber ===== */
 @keyframes uploadPulse {
-    0%, 100% {
-        border-color: rgba(99, 102, 241, 0.3);
+
+    0%,
+    100% {
+        border-color: rgba(184, 148, 58, 0.3);
     }
+
     50% {
-        border-color: rgba(99, 102, 241, 0.6);
+        border-color: rgba(184, 148, 58, 0.65);
     }
 }
 
 .upload-zone-active {
     animation: uploadPulse 1.5s ease-in-out infinite;
-    background-color: rgba(99, 102, 241, 0.04);
+    background-color: rgba(184, 148, 58, 0.04);
 }
 
 /* ===== Circular Progress for Uploads ===== */
@@ -170,15 +232,56 @@ select,
         opacity: 0;
         transform: scaleX(0.8);
     }
+
     to {
         opacity: 1;
         transform: scaleX(1);
     }
 }
 
-/* ===== Drag Over Highlight ===== */
+/* ===== Drag Over Highlight — Amber ===== */
 .drag-over {
-    border-color: #6366f1 !important;
-    background-color: rgba(99, 102, 241, 0.06) !important;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    border-color: var(--gold) !important;
+    background-color: rgba(184, 148, 58, 0.05) !important;
+    box-shadow: 0 0 0 3px rgba(184, 148, 58, 0.12);
+}
+
+/* ===== Gold Button Base ===== */
+.btn-gold {
+    background-color: var(--gold);
+    color: #fefcf8;
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    border: none;
+    padding: 0.85rem 1.5rem;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-light);
+    box-shadow: 0 2px 12px rgba(184, 148, 58, 0.3);
+}
+
+.btn-ghost-gold {
+    background-color: transparent;
+    color: var(--gold-dark);
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    border: 1px solid var(--gold-muted);
+    padding: 0.8rem 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-ghost-gold:hover {
+    background-color: rgba(184, 148, 58, 0.06);
+    border-color: var(--gold);
+    color: var(--gold);
 }

@@ -196,25 +196,47 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
         },
     };
 
+    // Shared input class for legal editorial style
+    const inputClass = `w-full px-3.5 py-2.5 text-sm bg-[#fefcf8] text-[#1a1612] resize-none transition-all duration-150 placeholder:text-[#c9a96e] min-h-[44px] rounded-sm border`;
+
     return (
         <motion.div
-            className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden"
+            className="bg-[#fefcf8] border border-[#e8e2d6] shadow-sm overflow-hidden rounded-sm"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
+            {/* Premium gold top accent bar */}
+            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#b8943a] to-transparent" />
+
             <div className="p-6 sm:p-8">
-                {/* Header — flat, professional, no gradient bar or emoji */}
-                <motion.h2
-                    variants={itemVariants}
-                    className="text-lg font-medium text-gray-900 mb-2"
-                >
-                    Share your feedback with Chirag Shah &amp; Co. Advocates &amp; Solicitors
-                </motion.h2>
+                {/* Header — serif, editorial, formal */}
+                <motion.div variants={itemVariants} className="mb-6">
+                    <div className="w-10 h-px bg-[#b8943a] mb-5" />
+                    <h2
+                        className="text-xl mb-1 tracking-wide"
+                        style={{
+                            fontFamily: 'var(--font-display, Georgia, serif)',
+                            color: '#1a1612',
+                            fontWeight: 400,
+                        }}
+                    >
+                        Share Your Feedback
+                    </h2>
+                    <p
+                        className="text-xs tracking-[0.15em] uppercase"
+                        style={{ color: '#7a7268', fontFamily: 'var(--font-body, sans-serif)' }}
+                    >
+                        Chirag Shah &amp; Co. Advocates &amp; Solicitors
+                    </p>
+                </motion.div>
+
+                <motion.div variants={itemVariants} className="w-full h-px bg-[#e8e2d6] mb-6" />
 
                 <motion.p
                     variants={itemVariants}
-                    className="text-gray-500 text-sm mb-6"
+                    className="text-xs tracking-wide uppercase mb-6"
+                    style={{ color: '#7a7268', fontFamily: 'var(--font-body, sans-serif)' }}
                 >
                     Your response is confidential and helps us improve our services.
                 </motion.p>
@@ -222,8 +244,12 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Feedback textarea */}
                     <motion.div variants={itemVariants}>
-                        <label htmlFor="feedback-text" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            What went wrong? <span className="text-red-500">*</span>
+                        <label
+                            htmlFor="feedback-text"
+                            className="block text-xs font-semibold tracking-[0.15em] uppercase mb-2"
+                            style={{ color: '#4a4540', fontFamily: 'var(--font-body, sans-serif)' }}
+                        >
+                            Your Feedback <span style={{ color: '#b8943a' }}>*</span>
                         </label>
                         <textarea
                             id="feedback-text"
@@ -234,16 +260,18 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             }}
                             placeholder="Tell us about your experience..."
                             rows={4}
-                            className={`w-full px-3.5 py-2.5 rounded-md border text-sm text-gray-800 resize-none transition-all duration-150 placeholder:text-gray-400 bg-white min-h-[48px] ${error
-                                ? 'border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-500'
-                                : 'border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                            className={`${inputClass} ${error
+                                ? 'border-red-400 focus:border-red-500'
+                                : 'border-[#e8e2d6] focus:border-[#b8943a]'
                                 }`}
+                            style={{ fontFamily: 'var(--font-body, sans-serif)' }}
                         />
                         {error && (
                             <motion.p
                                 initial={{ opacity: 0, y: -4 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="text-red-500 text-xs mt-1.5 flex items-center gap-1"
+                                className="text-red-500 text-xs mt-1.5 flex items-center gap-1 tracking-wide"
+                                style={{ fontFamily: 'var(--font-body, sans-serif)' }}
                             >
                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01" />
@@ -253,21 +281,27 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                         )}
                     </motion.div>
 
-                    {/* === Media Upload Zone — clean, flat Google-style === */}
+                    {/* === Media Upload Zone === */}
                     <motion.div variants={itemVariants}>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Attachments <span className="text-gray-400 font-normal">(optional)</span>
+                        <label
+                            className="block text-xs font-semibold tracking-[0.15em] uppercase mb-2"
+                            style={{ color: '#4a4540', fontFamily: 'var(--font-body, sans-serif)' }}
+                        >
+                            Attachments{' '}
+                            <span className="font-normal normal-case tracking-normal" style={{ color: '#7a7268' }}>
+                                (optional)
+                            </span>
                         </label>
 
-                        {/* Flat upload area */}
+                        {/* Upload area — warm amber border */}
                         <div
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
                             onClick={() => fileInputRef.current?.click()}
-                            className={`relative cursor-pointer rounded-md border transition-all duration-150 ${isDragOver
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                            className={`relative cursor-pointer transition-all duration-150 rounded-sm border ${isDragOver
+                                ? 'border-[#b8943a] bg-[#b8943a]/5'
+                                : 'border-[#e8e2d6] hover:border-[#c9a96e] hover:bg-[#f5f3ef]'
                                 } ${mediaFiles.length >= MAX_FILES ? 'opacity-50 pointer-events-none' : ''}`}
                         >
                             <div className="flex items-center gap-3 py-3.5 px-4">
@@ -275,16 +309,27 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                     animate={isDragOver ? { scale: 1.05 } : { scale: 1 }}
                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                 >
-                                    {/* Paperclip / attachment icon */}
-                                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-4 h-4"
+                                        style={{ color: '#c9a96e' }}
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                                     </svg>
                                 </motion.div>
                                 <div>
-                                    <p className="text-sm text-[#1a73e8] font-medium">
-                                        {isDragOver ? 'Drop files here' : 'Add files'}
+                                    <p
+                                        className="text-xs font-semibold tracking-wider uppercase"
+                                        style={{ color: '#b8943a', fontFamily: 'var(--font-body, sans-serif)' }}
+                                    >
+                                        {isDragOver ? 'Drop files here' : 'Attach Files'}
                                     </p>
-                                    <p className="text-xs text-gray-400">
+                                    <p
+                                        className="text-xs mt-0.5"
+                                        style={{ color: '#7a7268', fontFamily: 'var(--font-body, sans-serif)' }}
+                                    >
                                         Images &amp; videos · Max {MAX_SIZE_MB}MB · Up to {MAX_FILES} files
                                     </p>
                                 </div>
@@ -311,6 +356,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -4 }}
                                     className="text-red-500 text-xs mt-2 flex items-center gap-1"
+                                    style={{ fontFamily: 'var(--font-body, sans-serif)' }}
                                 >
                                     <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -336,7 +382,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.8 }}
                                             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                                            className="relative aspect-square rounded-md overflow-hidden bg-gray-100 group"
+                                            className="relative aspect-square overflow-hidden bg-[#f5f3ef] group rounded-sm"
                                         >
                                             {/* Preview */}
                                             {mf.type === 'image' ? (
@@ -357,7 +403,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
 
                                             {/* Video badge */}
                                             {mf.type === 'video' && mf.status === 'done' && (
-                                                <div className="absolute bottom-1.5 left-1.5 bg-black/60 backdrop-blur-sm rounded px-1.5 py-0.5 flex items-center gap-1">
+                                                <div className="absolute bottom-1.5 left-1.5 bg-black/60 backdrop-blur-sm rounded-sm px-1.5 py-0.5 flex items-center gap-1">
                                                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
                                                         <path d="M8 5v14l11-7z" />
                                                     </svg>
@@ -380,7 +426,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                                                 r="15.5"
                                                             />
                                                             <circle
-                                                                className="text-white"
+                                                                style={{ color: '#b8943a' }}
                                                                 strokeWidth="3"
                                                                 strokeDasharray={`${mf.progress} 100`}
                                                                 strokeLinecap="round"
@@ -401,7 +447,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                             {/* Error overlay */}
                                             {mf.status === 'error' && (
                                                 <div className="absolute inset-0 bg-red-500/20 backdrop-blur-[2px] flex items-center justify-center">
-                                                    <div className="w-8 h-8 rounded-full bg-red-500/80 flex items-center justify-center">
+                                                    <div className="w-8 h-8 rounded-sm bg-red-500/80 flex items-center justify-center">
                                                         <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                                         </svg>
@@ -409,12 +455,16 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                                 </div>
                                             )}
 
-                                            {/* Success checkmark */}
+                                            {/* Success checkmark — gold */}
                                             {mf.status === 'done' && (
                                                 <motion.div
                                                     initial={{ opacity: 0, scale: 0 }}
                                                     animate={{ opacity: 1, scale: 1 }}
-                                                    className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shadow-sm"
+                                                    className="absolute top-1.5 right-1.5 w-5 h-5 flex items-center justify-center shadow-sm"
+                                                    style={{
+                                                        backgroundColor: '#b8943a',
+                                                        borderRadius: '2px',
+                                                    }}
                                                 >
                                                     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -429,7 +479,7 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                                                     e.stopPropagation();
                                                     removeFile(mf.id);
                                                 }}
-                                                className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70"
+                                                className="absolute top-1.5 left-1.5 w-6 h-6 bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 rounded-sm"
                                                 whileTap={{ scale: 0.85 }}
                                             >
                                                 <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -445,8 +495,15 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
 
                     {/* Email */}
                     <motion.div variants={itemVariants}>
-                        <label htmlFor="feedback-email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Email <span className="text-gray-400 font-normal">(optional)</span>
+                        <label
+                            htmlFor="feedback-email"
+                            className="block text-xs font-semibold tracking-[0.15em] uppercase mb-2"
+                            style={{ color: '#4a4540', fontFamily: 'var(--font-body, sans-serif)' }}
+                        >
+                            Email{' '}
+                            <span className="font-normal normal-case tracking-normal" style={{ color: '#7a7268' }}>
+                                (optional)
+                            </span>
                         </label>
                         <input
                             id="feedback-email"
@@ -454,14 +511,22 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="your@email.com"
-                            className="w-full px-3.5 py-2.5 rounded-md border border-gray-300 bg-white text-gray-800 text-sm transition-all duration-150 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 min-h-[44px]"
+                            className={`${inputClass} border-[#e8e2d6] focus:border-[#b8943a]`}
+                            style={{ fontFamily: 'var(--font-body, sans-serif)' }}
                         />
                     </motion.div>
 
                     {/* Phone */}
                     <motion.div variants={itemVariants}>
-                        <label htmlFor="feedback-phone" className="block text-sm font-medium text-gray-700 mb-1.5">
-                            Phone <span className="text-gray-400 font-normal">(optional)</span>
+                        <label
+                            htmlFor="feedback-phone"
+                            className="block text-xs font-semibold tracking-[0.15em] uppercase mb-2"
+                            style={{ color: '#4a4540', fontFamily: 'var(--font-body, sans-serif)' }}
+                        >
+                            Phone{' '}
+                            <span className="font-normal normal-case tracking-normal" style={{ color: '#7a7268' }}>
+                                (optional)
+                            </span>
                         </label>
                         <input
                             id="feedback-phone"
@@ -469,16 +534,20 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             placeholder="+91 98765 43210"
-                            className="w-full px-3.5 py-2.5 rounded-md border border-gray-300 bg-white text-gray-800 text-sm transition-all duration-150 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 min-h-[44px]"
+                            className={`${inputClass} border-[#e8e2d6] focus:border-[#b8943a]`}
+                            style={{ fontFamily: 'var(--font-body, sans-serif)' }}
                         />
                     </motion.div>
 
-                    {/* Submit */}
+                    {/* Thin divider before submit */}
+                    <motion.div variants={itemVariants} className="w-full h-px bg-[#e8e2d6]" />
+
+                    {/* Submit — flat gold, uppercase, tracked */}
                     <motion.div variants={itemVariants}>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium py-3 px-6 rounded-full transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[44px] text-sm"
+                            className="btn-gold w-full disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[44px]"
                         >
                             {loading ? (
                                 <>
@@ -494,18 +563,22 @@ export default function NegativeFeedbackForm({ onSubmit, loading, businessName }
                         </button>
                     </motion.div>
 
-                    {/* Privacy note */}
+                    {/* Privacy note — formal, tracked */}
                     <motion.p
                         variants={itemVariants}
-                        className="text-xs text-gray-400 text-center flex items-center justify-center gap-1.5"
+                        className="text-xs text-center flex items-center justify-center gap-1.5 tracking-wide uppercase"
+                        style={{ color: '#c9a96e', fontFamily: 'var(--font-body, sans-serif)' }}
                     >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                         Your feedback is private and only shared with the business.
                     </motion.p>
                 </form>
             </div>
+
+            {/* Gold bottom accent bar */}
+            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#b8943a] to-transparent" />
         </motion.div>
     );
 }

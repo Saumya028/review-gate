@@ -117,27 +117,50 @@ export default function BusinessPage() {
     // Error state - business not found
     if (step === 'error') {
         return (
-            <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-[#f5f3ef] flex items-center justify-center p-4">
                 <motion.div
-                    className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 text-center max-w-md w-full"
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    className="bg-[#fefcf8] border border-[#e8e2d6] shadow-sm p-10 text-center max-w-md w-full rounded-sm"
+                    initial={{ opacity: 0, scale: 0.97 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4 }}
                 >
-                    <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
-                        <svg className="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                        </svg>
-                    </div>
-                    <h2 className="text-lg font-medium text-gray-900 mb-2">Business Not Found</h2>
-                    <p className="text-gray-500 text-sm mb-6">
+                    {/* Thin gold top rule */}
+                    <div className="w-12 h-px bg-[#b8943a] mx-auto mb-7" />
+
+                    <svg
+                        className="w-8 h-8 mx-auto mb-4"
+                        style={{ color: '#c9a96e' }}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+
+                    <h2
+                        className="text-xl mb-2 tracking-wide"
+                        style={{
+                            fontFamily: 'var(--font-display, Georgia, serif)',
+                            color: '#1a1612',
+                            fontWeight: 400,
+                        }}
+                    >
+                        Business Not Found
+                    </h2>
+                    <p
+                        className="text-xs tracking-wider uppercase mb-7"
+                        style={{ color: '#7a7268', fontFamily: 'var(--font-body, sans-serif)' }}
+                    >
                         The business you&apos;re looking for doesn&apos;t exist or the link may be incorrect.
                     </p>
+
+                    <div className="w-full h-px bg-[#e8e2d6] mb-7" />
+
                     <a
                         href="/"
-                        className="inline-block bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium py-3 px-8 rounded-full transition-all duration-200 shadow-sm hover:shadow-md text-sm min-h-[44px] leading-[44px]"
+                        className="inline-block btn-gold min-h-[44px] leading-[44px] px-8"
                     >
-                        Go Home
+                        Return Home
                     </a>
                 </motion.div>
             </div>
@@ -149,88 +172,102 @@ export default function BusinessPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center p-4">
-            <div className="w-full max-w-md">
+        <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center p-4">
+            <div className="w-full max-w-sm sm:max-w-md">
                 <AnimatePresence mode="wait">
                     {step === 'business' && (
                         <motion.div
                             key="business"
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 24 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={stepTransition}
+                            className="rounded-[1.75rem] overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.10)] w-full"
                         >
-                            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                                <div className="p-8 text-center">
-                                    {/* Google icon */}
-                                    <motion.div
-                                        className="mb-5 flex justify-center"
-                                        initial={{ scale: 0.8, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        transition={{ delay: 0.1, duration: 0.4 }}
-                                    >
-                                        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none">
-                                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
-                                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                                        </svg>
-                                    </motion.div>
+                            {/* ── AUTHORITATIVE LEGAL BANNER (Top Half) ── */}
+                            <div className="bg-gradient-to-b from-[#232731] to-[#181B22] px-6 pt-7 pb-6 flex flex-col items-center">
+                                {/* Logo Badge */}
+                                <motion.div
+                                    className="rounded-full bg-white p-2.5 w-24 h-24 flex items-center justify-center mx-auto shadow-md border border-[#D4AF37]/30 overflow-hidden"
+                                    initial={{ scale: 0.7, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ type: 'spring', stiffness: 280, damping: 22, delay: 0.08 }}
+                                >
+                                    <Image
+                                        src="/image_94dc06.png"
+                                        alt="Chirag Shah & Co. Logo"
+                                        width={80}
+                                        height={80}
+                                        className="object-contain w-full h-full"
+                                        priority
+                                    />
+                                </motion.div>
 
-                                    {/* Firm name */}
-                                    <motion.h1
-                                        className="text-xl font-medium text-gray-900 mb-1"
-                                        initial={{ opacity: 0, y: 8 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.15 }}
-                                    >
-                                        Chirag Shah &amp; Co.
-                                    </motion.h1>
+                                {/* Firm Name */}
+                                <motion.h1
+                                    className="text-white text-xl font-medium tracking-wide text-center mt-3"
+                                    style={{ fontFamily: 'var(--font-display, Georgia, serif)' }}
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.18 }}
+                                >
+                                    Chirag Shah &amp; Co.
+                                </motion.h1>
 
-                                    {/* Subtitle with location */}
-                                    <motion.p
-                                        className="text-sm text-gray-500 mb-1"
-                                        initial={{ opacity: 0, y: 8 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.2 }}
-                                    >
-                                        Advocates &amp; Solicitors
-                                    </motion.p>
+                                {/* Sub-branding */}
+                                <motion.p
+                                    className="text-[#D4AF37] text-xs font-semibold tracking-widest uppercase text-center mt-1"
+                                    initial={{ opacity: 0, y: 6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.26 }}
+                                >
+                                    Advocates &amp; Solicitors
+                                </motion.p>
 
-                                    <motion.div
-                                        className="inline-flex items-center gap-1 text-gray-400 text-xs mb-8"
-                                        initial={{ opacity: 0, y: 8 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.25 }}
-                                    >
-                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                                        </svg>
-                                        Andheri, Mumbai
-                                    </motion.div>
+                                {/* Thin gold rule */}
+                                <motion.div
+                                    className="h-px w-20 mt-4 mb-3"
+                                    style={{ background: 'linear-gradient(to right, transparent, #D4AF37, transparent)' }}
+                                    initial={{ scaleX: 0, opacity: 0 }}
+                                    animate={{ scaleX: 1, opacity: 1 }}
+                                    transition={{ delay: 0.32, duration: 0.5 }}
+                                />
 
-                                    {/* Rating prompt */}
-                                    <motion.p
-                                        className="text-gray-600 text-sm mb-2"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.3 }}
-                                    >
-                                        Rate your experience
-                                    </motion.p>
+                                {/* Location pin */}
+                                <motion.p
+                                    className="text-gray-400 text-xs text-center font-medium"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.38 }}
+                                >
+                                    📍 Andheri, Mumbai
+                                </motion.p>
+                            </div>
 
-                                    {/* Star rating */}
-                                    <StarRating onRate={handleRatingSelect} />
+                            {/* ── POLISHED CONTENT WORKSPACE (Bottom Half) ── */}
+                            <div className="bg-white rounded-b-[1.75rem] px-6 pt-7 pb-8 flex flex-col items-center justify-center space-y-1">
+                                {/* Action guide */}
+                                <motion.p
+                                    className="text-gray-500 text-sm font-light text-center mb-1"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.44 }}
+                                >
+                                    Tap a star to rate your experience
+                                </motion.p>
 
-                                    <motion.p
-                                        className="text-gray-400 text-xs mt-2"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.8 }}
-                                    >
-                                        Your review will be posted on Google
-                                    </motion.p>
-                                </div>
+                                {/* Star rating */}
+                                <StarRating onRate={handleRatingSelect} />
+
+                                {/* Google caption */}
+                                <motion.p
+                                    className="text-gray-500 text-xs text-center font-medium uppercase tracking-wider pt-1"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.8 }}
+                                >
+                                    Your review will be posted on Google
+                                </motion.p>
                             </div>
                         </motion.div>
                     )}
@@ -270,69 +307,104 @@ export default function BusinessPage() {
                     {step === 'success' && (
                         <motion.div
                             key="success"
-                            initial={{ opacity: 0, scale: 0.95 }}
+                            initial={{ opacity: 0, scale: 0.97 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
+                            exit={{ opacity: 0, scale: 0.97 }}
                             transition={stepTransition}
+                            className="rounded-[1.75rem] overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.10)] w-full"
                         >
-                            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                                <div className="p-8 text-center">
-                                    <motion.div
-                                        className="mb-5"
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.15 }}
-                                    >
-                                        <div className="w-14 h-14 bg-green-50 rounded-full flex items-center justify-center mx-auto">
-                                            <svg
-                                                className="w-7 h-7 text-green-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2.5}
-                                                    d="M5 13l4 4L19 7"
-                                                />
-                                            </svg>
-                                        </div>
-                                    </motion.div>
-
-                                    <motion.h2
-                                        className="text-xl font-medium text-gray-900 mb-2"
-                                        initial={{ opacity: 0, y: 8 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.25 }}
-                                    >
-                                        Thank You!
-                                    </motion.h2>
-
-                                    <motion.p
-                                        className="text-gray-500 text-sm mb-8"
-                                        initial={{ opacity: 0, y: 8 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.3 }}
-                                    >
-                                        Your feedback helps improve Chirag Shah &amp; Co.
-                                        <br />
-                                        We truly appreciate your time.
-                                    </motion.p>
-
-                                    <motion.button
-                                        onClick={() => {
-                                            setStep('business');
-                                            setRating(null);
-                                        }}
-                                        className="w-full bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium py-3 px-6 rounded-full transition-all duration-200 shadow-sm hover:shadow-md text-sm min-h-[44px]"
-                                        initial={{ opacity: 0, y: 8 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.35 }}
-                                    >
-                                        Submit Another Review
-                                    </motion.button>
+                            {/* Banner header — success state */}
+                            <div className="bg-gradient-to-b from-[#232731] to-[#181B22] px-6 pt-7 pb-6 flex flex-col items-center">
+                                <div className="rounded-full bg-white p-2.5 w-24 h-24 flex items-center justify-center mx-auto shadow-md border border-[#D4AF37]/30 overflow-hidden">
+                                    <Image
+                                        src="/image_94dc06.png"
+                                        alt="Chirag Shah & Co. Logo"
+                                        width={80}
+                                        height={80}
+                                        className="object-contain w-full h-full"
+                                    />
                                 </div>
+                                <h1
+                                    className="text-white text-xl font-medium tracking-wide text-center mt-3"
+                                    style={{ fontFamily: 'var(--font-display, Georgia, serif)' }}
+                                >
+                                    Chirag Shah &amp; Co.
+                                </h1>
+                                <p className="text-[#D4AF37] text-xs font-semibold tracking-widest uppercase text-center mt-1">
+                                    Advocates &amp; Solicitors
+                                </p>
+                                <div
+                                    className="h-px w-20 mt-4 mb-3"
+                                    style={{ background: 'linear-gradient(to right, transparent, #D4AF37, transparent)' }}
+                                />
+                                <p className="text-gray-400 text-xs text-center font-medium">📍 Andheri, Mumbai</p>
+                            </div>
+
+                            {/* Success content workspace */}
+                            <div className="bg-white rounded-b-[1.75rem] px-8 pt-8 pb-9 flex flex-col items-center text-center">
+                                <motion.div
+                                    className="mb-5"
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.15 }}
+                                >
+                                    <div
+                                        className="w-14 h-14 rounded-full flex items-center justify-center mx-auto border-2"
+                                        style={{
+                                            borderColor: '#D4AF37',
+                                            backgroundColor: 'rgba(212, 175, 55, 0.08)',
+                                        }}
+                                    >
+                                        <svg
+                                            className="w-6 h-6"
+                                            style={{ color: '#D4AF37' }}
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                </motion.div>
+
+                                <div className="w-12 h-px bg-[#D4AF37] mx-auto mb-5" />
+
+                                <motion.h2
+                                    style={{ fontFamily: 'var(--font-display, Georgia, serif)', color: '#1a1612', fontWeight: 400 }}
+                                    className="text-2xl mb-2 tracking-wide"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.25 }}
+                                >
+                                    Thank You
+                                </motion.h2>
+
+                                <motion.p
+                                    className="text-xs tracking-[0.15em] uppercase mb-7 leading-relaxed"
+                                    style={{ color: '#7a7268' }}
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    Your feedback helps improve Chirag Shah &amp; Co.
+                                    <br />
+                                    We truly appreciate your time.
+                                </motion.p>
+
+                                <div className="w-full h-px bg-[#e8e2d6] mb-6" />
+
+                                <motion.button
+                                    onClick={() => {
+                                        setStep('business');
+                                        setRating(null);
+                                    }}
+                                    className="w-full px-8 py-3 rounded-full bg-[#1E2229] text-white text-xs font-semibold tracking-widest uppercase transition duration-200 hover:scale-[1.02] active:scale-[0.98] hover:bg-[#2d3340] shadow-sm"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.35 }}
+                                >
+                                    Submit Another Review
+                                </motion.button>
                             </div>
                         </motion.div>
                     )}
@@ -340,7 +412,8 @@ export default function BusinessPage() {
 
                 {/* Powered by footer */}
                 <motion.p
-                    className="text-center text-xs text-gray-400 mt-6"
+                    className="text-center text-xs tracking-[0.2em] uppercase mt-6"
+                    style={{ color: '#c9a96e', fontFamily: 'var(--font-body, sans-serif)' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.2 }}

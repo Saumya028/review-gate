@@ -1,11 +1,22 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { Cormorant_Garamond, Montserrat } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({
+// Premium serif display font — editorial, law-firm quality
+const cormorant = Cormorant_Garamond({
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-inter',
+    variable: '--font-display',
+    weight: ['300', '400', '500', '600', '700'],
+    style: ['normal', 'italic'],
+});
+
+// Clean, highly legible sans-serif for body/UI text
+const montserrat = Montserrat({
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-body',
+    weight: ['300', '400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -20,7 +31,7 @@ export const viewport: Viewport = {
     initialScale: 1,
     maximumScale: 1,
     userScalable: false,
-    themeColor: '#6366f1',
+    themeColor: '#0f172a',
 };
 
 export default function RootLayout({
@@ -29,8 +40,8 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className={inter.variable}>
-            <body className={`${inter.className} bg-slate-50 antialiased`}>
+        <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
+            <body className={`${montserrat.className} bg-[#f5f3ef] antialiased`}>
                 {children}
             </body>
         </html>
